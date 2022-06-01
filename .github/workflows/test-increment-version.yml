@@ -5,13 +5,14 @@ on:
     inputs:
       current-version-file:
         description: 'The current version file to increment'
+        default: 'chem101-server.platform-conventions.gradle'
         required: true
 
 
 jobs:
 
   test-increment-version:
-    name: Test version increment for ${{chem101-server.platform-conventions.gradle}}
+    name: Test version increment for ${{github.event.inputs.current-version-file}}
     runs-on: alpine-latest
 
     steps:
@@ -19,7 +20,7 @@ jobs:
       - name: Getting current version
         id: read_current_version
         with:
-          current-version-file: ${{ github.event.inputs.branch }}
+          current-version-file: ${{github.event.inputs.current-version-file}}
         run:
           shell: bash
           working-directory: .github/read-current-version
