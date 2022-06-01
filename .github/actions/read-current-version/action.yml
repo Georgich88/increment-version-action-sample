@@ -1,0 +1,17 @@
+name: Read current version (Aktiv Server)
+description: Read current version from gradle file
+branding:
+  icon: 'tag'
+  color: 'purple'
+inputs:
+  current-version-file:
+    description: 'The file to extract current version'
+    required: true
+outputs:
+  current-version:
+    description: 'The current version'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.current-version-file }}

@@ -1,0 +1,28 @@
+group 'co.chem101'
+
+ext.versionNumber = '18.4.1'
+ext.app = 'tf-chem101'
+ext.profile = System.getenv('PROFILE') // dev-api, staging-api, prod-api
+ext.ref = System.getenv('GITHUB_REF') // refs/heads/<branch_name>
+ext.refs = ext.ref != null ? ext.ref.split('/') : null;
+ext.branch = ext.refs != null && ext.refs.length >= 3 ? ext.refs[refs.length-1] : null // last ref for branch
+ext.branch = ext.branch == 'HEAD' ? 'main' : ext.branch // when the deployment is done according to a commitId which doesn't have any branch pointing to it
+ext.source = System.getenv('GITHUB_SHA')
+ext.commit = ext.source != null ? ext.source.length() <= 7 ? ext.source : ext.source.substring(0, 7) : null
+ext.versionRef = (ext.branch != null ? '-' + ext.branch : 'branch') + (ext.commit != null ? '-' + ext.commit : 'commit') + '-' + ext.versionNumber
+
+// to remove '-' from the starting of the versionRef
+version = ext.versionRef.substring(0,1) == '-' ? ext.versionRef.substring(1) : ext.versionRef;
+
+publishing {
+  repositories {
+    maven {
+      name = 'GitHubPackages'
+      url = uri('https://maven.pkg.github.com/101-Edu/AktivChem-Server')
+      credentials {
+        username = System.getenv('GITHUB_ACTOR')
+        password = System.getenv('GITHUB_TOKEN')
+      }
+    }
+  }
+}
