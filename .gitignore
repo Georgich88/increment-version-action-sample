@@ -1,0 +1,11 @@
+**/.idea
+**/.gradle
+**/gradle/wrapper/**
+**/*.pid
+**/build
+.DS_Store
+
+# test generated csv files - ONLY those within root folders of modules, not deeper
+/*/*.csv
+/*/*.zip
+/*/*.someinternalextension
