@@ -3,6 +3,8 @@
 **/gradle/wrapper/**
 **/*.pid
 **/build
+**/gradlew
+**/gradlew.bat
 .DS_Store
 
 # test generated csv files - ONLY those within root folders of modules, not deeper
