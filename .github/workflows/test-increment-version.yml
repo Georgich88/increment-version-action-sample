@@ -21,9 +21,9 @@ jobs:
         id: read_current_version
         with:
           current-version-file: ${{github.event.inputs.current-version-file}}
-        run:
-          shell: bash
-          working-directory: .github/read-current-version
+        run: |
+          bash read-current-version.sh ${{github.event.inputs.current-version-file}}
+        working-directory: .github/read-current-version
 
       - name: Print current version
         run: echo ${{ steps.read_current_version.outputs.current-version }}
