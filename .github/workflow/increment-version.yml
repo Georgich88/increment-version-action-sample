@@ -17,8 +17,12 @@ jobs:
     runs-on: alpine:3.10
     steps:
       - uses: actions/checkout@v2
-      - name: Install dependencies
-        working-directory: .github/clubhouse_commenter
-        run: yarn
-        env:
-          NODE_AUTH_TOKEN: ""
+      - name: Getting current version
+        id: read_current_version
+        with:
+          current-version-file: 'chem101-server.platform-conventions.gradle'
+        run:
+          shell: bash
+          working-directory: .github/read-current-version
+      - name: Print current version
+        run: echo ${{ steps.read_current_version.outputs.current-version }}
