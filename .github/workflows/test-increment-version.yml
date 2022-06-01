@@ -3,26 +3,26 @@ name: test-increment-version
 on:
   workflow_dispatch:
     inputs:
-      current-version:
-        description: 'The current version to increment'
-        required: true
-      version-fragment:
-        description: 'The versions fragment to increment. possible options are [ major | feature | fix ]'
+      current-version-file:
+        description: 'The current version file to increment'
         required: true
 
 
 jobs:
+
   test-increment-version:
-    name: Test version increment for ${{ github.event.inputs.current-version }} fragment ${{ github.event.inputs.version-fragment }}
-    runs-on: alpine:3.10
+    name: Test version increment for ${{chem101-server.platform-conventions.gradle}}
+    runs-on: alpine-latest
+
     steps:
       - uses: actions/checkout@v2
       - name: Getting current version
         id: read_current_version
         with:
-          current-version-file: 'chem101-server.platform-conventions.gradle'
+          current-version-file: ${{ github.event.inputs.branch }}
         run:
           shell: bash
           working-directory: .github/read-current-version
+
       - name: Print current version
         run: echo ${{ steps.read_current_version.outputs.current-version }}
