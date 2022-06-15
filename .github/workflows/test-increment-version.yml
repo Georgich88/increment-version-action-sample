@@ -26,7 +26,4 @@ jobs:
 
       - name: Print current version
         id: print_current_version
-        with:
-          current-version-file: ${{github.event.inputs.current-version-file}}
-        run: |
-          echo ${{ steps.read_current_version.outputs.current-version }}
+        run: echo ${{ steps.read_current_version.outputs.current-version }}
