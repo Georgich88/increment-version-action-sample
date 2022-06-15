@@ -31,7 +31,7 @@ main() {
   git commit -m $tag
 
   # push new version and tag
-  git push "${GITHUB_ACTION_REPOSITORY}" $BRANCH_NAME
+  git push origin $BRANCH_NAME
   git tag -a $tag -m $tag
   git push origin tag $tag
 
