@@ -5,9 +5,16 @@ on:
     inputs:
       current-version-file:
         description: 'The current version file to increment'
-        default: 'chem101-server.platform-conventions.gradle'
+        default: 'demo/chem101-server.platform-conventions.gradle'
         required: true
-
+      release-type:
+        type: choice
+        description: 'The type of release: fix, minor or major'
+        required: true
+        options:
+          - fix
+          - minor
+          - major
 
 jobs:
 
@@ -16,14 +23,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Getting current version
         id: read_current_version
         working-directory: .github/actions/read-current-version
         run: | 
           bash read-current-version.sh ${{github.event.inputs.current-version-file}}
 
-
       - name: Print current version
         id: print_current_version
         run: echo ${{ steps.read_current_version.outputs.current-version }}
+
+      - name: Increment version
+        id: increment_version
+        run: |
+          bash increment-version.sh ${{ steps.read_current_version.outputs.current-version }}  ${{ github.event.inputs.release-type }} 
+
+      - name: Print incremented version
+        id: print_incremented_version
+        run: echo ${{ steps.increment_version.outputs.next-version }}
