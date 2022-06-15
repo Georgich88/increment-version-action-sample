@@ -47,7 +47,7 @@ main() {
   esac
 
   next_version="${major}.${minor}.${fix}"
-  echo "create $release_type-release version: $prev_version -> $next_version"
+  echo "increment $release_type-release version: $prev_version -> $next_version"
 
   echo ::set-output name=next-version::"$next_version"
 }

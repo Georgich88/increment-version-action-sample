@@ -27,19 +27,32 @@ jobs:
       - name: Getting current version
         id: read_current_version
         working-directory: .github/actions/read-current-version
-        run: | 
+        run: |
           bash read-current-version.sh ${{github.event.inputs.current-version-file}}
 
-      - name: Print current version
+      - name: Print current version ${{ steps.read_current_version.outputs.current-version }}
         id: print_current_version
         run: echo ${{ steps.read_current_version.outputs.current-version }}
 
-      - name: Increment version
+      - name: Increment version ${{ steps.read_current_version.outputs.current-version }}
         id: increment_version
         working-directory: .github/actions/increment-version
         run: |
-          bash increment-version.sh ${{ steps.read_current_version.outputs.current-version }}  ${{ github.event.inputs.release-type }} 
+          bash increment-version.sh \
+          ${{ steps.read_current_version.outputs.current-version }} \
+          ${{ github.event.inputs.release-type }} 
 
-      - name: Print incremented version
+      - name: Print next (incremented) version ${{ steps.read_current_version.outputs.next-version }}
         id: print_incremented_version
         run: echo ${{ steps.increment_version.outputs.next-version }}
+
+      - name: Commit next version ${{ steps.read_current_version.outputs.next-version }}
+        id: commit_next_version
+        working-directory: .github/actions/commit-next-version
+        run: |
+          bash increment-version.sh \ 
+          ${{ steps.read_current_version.outputs.current-version }} \
+          ${{ steps.read_current_version.outputs.next-version }} \
+          ${{github.event.inputs.current-version-file}}
+        env:
+          BRANCH_NAME: ${GITHUB_REF##*/}

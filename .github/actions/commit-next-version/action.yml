@@ -1,0 +1,19 @@
+name: Commit next version
+description: Replace a current version with the next and commit changes
+branding:
+  icon: 'tag'
+  color: 'purple'
+inputs:
+  current-version:
+    description: 'The current version to increment'
+    required: true
+  next-version:
+    description: 'The next (incremented) version'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.current-version }}
+    - ${{ inputs.next-version }}
+    - ${{ inputs.next-version }}
