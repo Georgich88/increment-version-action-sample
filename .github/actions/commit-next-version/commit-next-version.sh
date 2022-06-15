@@ -21,7 +21,7 @@ main() {
   cd ../../../
 
   # check out the branch and set user configs
-  git checkout -b $BRANCH_NAME
+  git checkout $BRANCH_NAME
   git config user.name "${GITHUB_ACTOR}"
   git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
@@ -29,7 +29,7 @@ main() {
   sed -i -e "s/"$current_version"/"$next_version"/g" $current_version_file
 
   # push new version and tag
-  git push -u origin $BRANCH_NAME
+  git push $BRANCH_NAME
   git tag -a $tag -m $tag
   git push origin tag $tag
 
