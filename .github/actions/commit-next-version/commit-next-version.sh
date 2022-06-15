@@ -29,6 +29,7 @@ main() {
   sed -i -e "s/"$current_version"/"$next_version"/g" $current_version_file
 
   # push new version and tag
+  git commit -m $tag
   git push $BRANCH_NAME
   git tag -a $tag -m $tag
   git push origin tag $tag
