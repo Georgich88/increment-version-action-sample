@@ -50,7 +50,7 @@ jobs:
         id: commit_next_version
         working-directory: .github/actions/commit-next-version
         run: |
-          bash increment-version.sh \ 
+          bash commit-next-version.sh \ 
           ${{ steps.read_current_version.outputs.current-version }} \
           ${{ steps.read_current_version.outputs.next-version }} \
           ${{github.event.inputs.current-version-file}}
