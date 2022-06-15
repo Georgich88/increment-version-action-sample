@@ -13,7 +13,7 @@ jobs:
 
   test-increment-version:
     name: Test version increment for ${{github.event.inputs.current-version-file}}
-    runs-on: alpine-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
