@@ -38,9 +38,7 @@ jobs:
         id: increment_version
         working-directory: .github/actions/increment-version
         run: |
-          bash increment-version.sh \
-          ${{ steps.read_current_version.outputs.current-version }} \
-          ${{ github.event.inputs.release-type }} 
+          bash increment-version.sh ${{ steps.read_current_version.outputs.current-version }} ${{ github.event.inputs.release-type }} 
 
       - name: Print next (incremented) version ${{ steps.read_current_version.outputs.next-version }}
         id: print_incremented_version
@@ -50,9 +48,6 @@ jobs:
         id: commit_next_version
         working-directory: .github/actions/commit-next-version
         run: |
-          bash commit-next-version.sh \ 
-          ${{ steps.read_current_version.outputs.current-version }} \
-          ${{ steps.increment_version.outputs.next-version }} \
-          ${{github.event.inputs.current-version-file}}
+          bash commit-next-version.sh ${{ steps.read_current_version.outputs.current-version }} ${{ steps.increment_version.outputs.next-version }} ${{github.event.inputs.current-version-file}}
         env:
           BRANCH_NAME: ${GITHUB_REF##*/}
