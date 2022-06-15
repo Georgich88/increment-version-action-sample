@@ -41,4 +41,5 @@ jobs:
 
       - name: Print incremented version
         id: print_incremented_version
+        working-directory: .github/actions/increment-version
         run: echo ${{ steps.increment_version.outputs.next-version }}
