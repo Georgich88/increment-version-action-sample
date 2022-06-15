@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Getting current version
         id: read_current_version
-        working-directory: .github/read-current-version
+        working-directory: .github/actions/read-current-version
         run: | 
           bash read-current-version.sh ${{github.event.inputs.current-version-file}}
 
