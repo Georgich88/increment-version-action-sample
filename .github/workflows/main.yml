@@ -24,6 +24,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Read the branch name
+        id: read_current_branch_name
+        run: echo ::set-output branch-name=short_ref::${GITHUB_REF#refs/*/}
+
       - name: Getting current version
         id: read_current_version
         working-directory: .github/actions/read-current-version
@@ -50,4 +55,4 @@ jobs:
         run: |
           bash commit-next-version.sh ${{ steps.read_current_version.outputs.current-version }} ${{ steps.increment_version.outputs.next-version }} ${{github.event.inputs.current-version-file}}
         env:
-          BRANCH_NAME: ${GITHUB_REF##*/}
+          BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
