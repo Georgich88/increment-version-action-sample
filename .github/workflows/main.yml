@@ -27,7 +27,7 @@ jobs:
 
       - name: Read the branch name
         id: read_current_branch_name
-        run: echo ::set-output branch-name=short_ref::${GITHUB_REF#refs/*/}
+        run: echo ::set-output name=branch-name::${GITHUB_REF#refs/*/}
 
       - name: Getting current version
         id: read_current_version
