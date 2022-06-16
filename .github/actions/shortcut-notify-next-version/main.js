@@ -7,12 +7,12 @@ async function notifyShortcut() {
 
   // exec('cd ../../../', (err, ignored, stderr) => {
 
-    // go to the main folder
-    if (err) {
-      console.log('\x1b[33m%s\x1b[0m', 'Could not go to main folder: ');
-      console.log('\x1b[31m%s\x1b[0m', stderr);
-      process.exit(1);
-    }
+    // // go to the main folder
+    // if (err) {
+    //   console.log('\x1b[33m%s\x1b[0m', 'Could not go to main folder: ');
+    //   console.log('\x1b[31m%s\x1b[0m', stderr);
+    //   process.exit(1);
+    // }
 
     exec('pwd', (err, stdout, stderr) => {
       console.log('\x1b[31m%s\x1b[0m', stdout);
