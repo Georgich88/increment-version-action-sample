@@ -17,95 +17,101 @@ async function notifyShortcut() {
     console.log('\x1b[31m%s\x1b[0m', stderr);
     console.log('\x1b[31m%s\x1b[0m', stdout);
   });
-    exec('git show-ref --tags', (err, showRefOutput, stderr) => {
 
-      // find all tags with output like:
-      // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
+  exec('git show-ref', (err, stdout, stderr) => {
+    console.log('\x1b[31m%s\x1b[0m', stderr);
+    console.log('\x1b[31m%s\x1b[0m', stdout);
+  });
+
+  exec('git show-ref --tags', (err, showRefOutput, stderr) => {
+
+    // find all tags with output like:
+    // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
+
+    if (err) {
+      console.log('\x1b[33m%s\x1b[0m', 'Could not find any tags because: ');
+      console.log('\x1b[31m%s\x1b[0m', showRefOutput);
+      console.log('\x1b[31m%s\x1b[0m', err);
+      console.log('\x1b[31m%s\x1b[0m', stderr);
+      process.exit(1);
+    }
+
+    // set action params
+    const CURRENT_VERSION = process.argv[2]
+    const NEXT_VERSION = process.argv[3]
+    const SHORTCUT_TOKEN = process.argv[4]
+    const GITHUB_TOKEN = process.argv[5]
+
+    // version tags
+    const currentVersionTag = 'v' + CURRENT_VERSION;
+    const nextVersionTag = 'v' + NEXT_VERSION;
+
+    // parse and find required tag
+    const tagHashes = showRefOutput.split(/\r?\n/);
+    let tagHash;
+    for (let tagHash in tagHashes) {
+      let hashAndTag = tagHash.split(/\s+/);
+      if (hashAndTag.length > 1 && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
+        tagHash = hashAndTag.at(0);
+      }
+    }
+
+    // cannot find commit tags
+    if (!tagHash) {
+      console.log('\x1b[33m%s\x1b[0m', 'Could not find a commit with current tag: ' + currentVersionTag);
+      process.exit(1);
+    }
+
+    exec(`git rev-list ${tagHash}..HEAD`, (err, revListOutput, stderr) => {
 
       if (err) {
-        console.log('\x1b[33m%s\x1b[0m', 'Could not find any tags because: ');
-        console.log('\x1b[31m%s\x1b[0m', showRefOutput);
-        console.log('\x1b[31m%s\x1b[0m', err);
+        console.log('\x1b[33m%s\x1b[0m', 'Could not find any commits because: ');
         console.log('\x1b[31m%s\x1b[0m', stderr);
         process.exit(1);
       }
 
-      // set action params
-      const CURRENT_VERSION = process.argv[2]
-      const NEXT_VERSION = process.argv[3]
-      const SHORTCUT_TOKEN = process.argv[4]
-      const GITHUB_TOKEN = process.argv[5]
-
-      // version tags
-      const currentVersionTag = 'v' + CURRENT_VERSION;
-      const nextVersionTag = 'v' + NEXT_VERSION;
-
-      // parse and find required tag
-      const tagHashes = showRefOutput.split(/\r?\n/);
-      let tagHash;
-      for (let tagHash in tagHashes) {
-        let hashAndTag = tagHash.split(/\s+/);
-        if (hashAndTag.length > 1 && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
-          tagHash = hashAndTag.at(0);
-        }
-      }
-
-      // cannot find commit tags
-      if (!tagHash) {
-        console.log('\x1b[33m%s\x1b[0m', 'Could not find a commit with current tag: ' + currentVersionTag);
-        process.exit(1);
-      }
-
-      exec(`git rev-list ${tagHash}..HEAD`, (err, revListOutput, stderr) => {
-
-        if (err) {
-          console.log('\x1b[33m%s\x1b[0m', 'Could not find any commits because: ');
-          console.log('\x1b[31m%s\x1b[0m', stderr);
-          process.exit(1);
-        }
-
-        // slack notification message
-        let deploymentDescription = `AktivChem-Server is preparing a release for ${currentVersionTag}. This has been deployed to dev and staging. All associated tickets have been labelled ${currentVersionTag} as well. The tickets to be released are:`
+      // slack notification message
+      let deploymentDescription = `AktivChem-Server is preparing a release for ${currentVersionTag}. This has been deployed to dev and staging. All associated tickets have been labelled ${currentVersionTag} as well. The tickets to be released are:`
 
 
-        // find all merged pull requests from the latest version
-        const commitHashes = revListOutput.split(/\r?\n/);
-        core.info(`Found ${commitHashes.length} commits from the ${currentVersionTag}`)
+      // find all merged pull requests from the latest version
+      const commitHashes = revListOutput.split(/\r?\n/);
+      core.info(`Found ${commitHashes.length} commits from the ${currentVersionTag}`)
 
-        // prepare description and update tags for stories associated with PRs
-        for (const commitSha in commitHashes) {
-          // find PRs associated with the commit SHA
-          const prs = findPrsByCommitSha(commitSha, GITHUB_TOKEN);
-          if (!prs) {
-            for (const prDetails in prs) {
-              // pull request details
-              const prNumber = prDetails.number;
-              const prDescription = prDetails.body;
-              const prTitle = prDetails.title;
-              const prLink = prDetails.html_url;
-              // retrieve stories from the pull request
-              const prComments = findPrCommentsByPrNumber(prNumber, GITHUB_TOKEN);
-              const storyIds = extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
-              const uniqueStoryIds = [...new Set(storyIds)];
-              // update story tags
-              uniqueStoryIds.forEach(async (storyId) => {
-                const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
-                if (story) {
-                  const storyCommentForDeployment = `\n - [${prTitle}](${prLink}) - [${story.name}](${story.app_url})`;
-                  deploymentDescription = deploymentDescription.concat(storyCommentForDeployment)
-                }
-              })
-            }
+      // prepare description and update tags for stories associated with PRs
+      for (const commitSha in commitHashes) {
+        // find PRs associated with the commit SHA
+        const prs = findPrsByCommitSha(commitSha, GITHUB_TOKEN);
+        if (!prs) {
+          for (const prDetails in prs) {
+            // pull request details
+            const prNumber = prDetails.number;
+            const prDescription = prDetails.body;
+            const prTitle = prDetails.title;
+            const prLink = prDetails.html_url;
+            // retrieve stories from the pull request
+            const prComments = findPrCommentsByPrNumber(prNumber, GITHUB_TOKEN);
+            const storyIds = extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
+            const uniqueStoryIds = [...new Set(storyIds)];
+            // update story tags
+            uniqueStoryIds.forEach(async (storyId) => {
+              const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
+              if (story) {
+                const storyCommentForDeployment = `\n - [${prTitle}](${prLink}) - [${story.name}](${story.app_url})`;
+                deploymentDescription = deploymentDescription.concat(storyCommentForDeployment)
+              }
+            })
           }
         }
+      }
 
-        core.info(`${deploymentDescription}`)
-        console.log('\x1b[31m%s\x1b[0m', deploymentDescription);
-        console.log(`::set-output name=deployment-description::${deploymentDescription}`);
-        process.exit(0);
+      core.info(`${deploymentDescription}`)
+      console.log('\x1b[31m%s\x1b[0m', deploymentDescription);
+      console.log(`::set-output name=deployment-description::${deploymentDescription}`);
+      process.exit(0);
 
-      });
     });
+  });
   // });
 }
 
