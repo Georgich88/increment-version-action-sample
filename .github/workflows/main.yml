@@ -49,13 +49,13 @@ jobs:
         id: print_incremented_version
         run: echo ${{ steps.increment_version.outputs.next-version }}
 
-      - name: Commit next version ${{ steps.increment_version.outputs.next-version }}
-        id: commit_next_version
-        working-directory: .github/actions/commit-next-version
-        run: |
-          bash commit-next-version.sh ${{ steps.read_current_version.outputs.current-version }} ${{ steps.increment_version.outputs.next-version }} ${{github.event.inputs.current-version-file}}
-        env:
-          BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
+#      - name: Commit next version ${{ steps.increment_version.outputs.next-version }}
+#        id: commit_next_version
+#        working-directory: .github/actions/commit-next-version
+#        run: |
+#          bash commit-next-version.sh ${{ steps.read_current_version.outputs.current-version }} ${{ steps.increment_version.outputs.next-version }} ${{github.event.inputs.current-version-file}}
+#        env:
+#          BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
 
       - name: Install JS dependencies
         working-directory: .github/shortcut-notify-next-version
