@@ -62,6 +62,9 @@ async function notifyShortcut() {
       if (hashAndTag.length > 1 && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
         tagHash = hashAndTag.at(0);
       }
+      console.log('currentVersionTag', currentVersionTag);
+      console.log('tag', hashAndTag.at(1).replace('refs/tags/', ''));
+
     }
 
     // cannot find commit tags
