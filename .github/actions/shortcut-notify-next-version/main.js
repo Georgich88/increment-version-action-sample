@@ -31,7 +31,7 @@ async function notifyShortcut() {
     console.log('\x1b[31m%s\x1b[0m', stderr);
   });
 
-  exec('git ls-remote --tags --refs', (err, showRefOutput, stderr) => {
+  exec('git show-ref --tags', (err, showRefOutput, stderr) => {
 
     // find all tags with output like:
     // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
@@ -58,7 +58,7 @@ async function notifyShortcut() {
     const tagHashes = showRefOutput.split(/\r?\n/);
     let tagHash;
     for (let tagHash in tagHashes) {
-      let hashAndTag = tagHash.split(/\t+/);
+      let hashAndTag = tagHash.split(/\s+/);
       if (hashAndTag.length > 1 && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
         tagHash = hashAndTag.at(0);
       }

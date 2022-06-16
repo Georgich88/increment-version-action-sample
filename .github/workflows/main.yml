@@ -24,6 +24,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # fetch all history for all tags and branches
 
       - name: Read the branch name
         id: read_current_branch_name
