@@ -21,6 +21,7 @@ async function notifyShortcut() {
 
       if (err) {
         console.log('\x1b[33m%s\x1b[0m', 'Could not find any revisions because: ');
+        console.log('\x1b[31m%s\x1b[0m', err);
         console.log('\x1b[31m%s\x1b[0m', stderr);
         process.exit(1);
       }
