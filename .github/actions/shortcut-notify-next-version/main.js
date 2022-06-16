@@ -5,24 +5,16 @@ const core = require('@actions/core')
 
 async function notifyShortcut() {
 
-  // exec('cd ../../../', (err, ignored, stderr) => {
+  exec('cd ../../../', (err, ignored, stderr) => {
 
-    // // go to the main folder
-    // if (err) {
-    //   console.log('\x1b[33m%s\x1b[0m', 'Could not go to main folder: ');
-    //   console.log('\x1b[31m%s\x1b[0m', stderr);
-    //   process.exit(1);
-    // }
+    // go to the main folder
+    if (err) {
+      console.log('\x1b[33m%s\x1b[0m', 'Could not go to main folder: ');
+      console.log('\x1b[31m%s\x1b[0m', stderr);
+      process.exit(1);
+    }
 
-    exec('pwd', (err, stdout, stderr) => {
-      console.log('\x1b[31m%s\x1b[0m', stdout);
-    });
-
-    exec('ls', (err, stdout, stderr) => {
-      console.log('\x1b[31m%s\x1b[0m', stdout);
-    });
-
-    exec('git show-ref --tags', (err, showRefOutput, stderr) => {
+    exec('/usr/bin/git show-ref --tags', (err, showRefOutput, stderr) => {
 
       // find all tags with output like:
       // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
@@ -60,7 +52,7 @@ async function notifyShortcut() {
         process.exit(1);
       }
 
-      exec(`git rev-list ${tagHash}..HEAD`, (err, revListOutput, stderr) => {
+      exec(`/usr/bin/git rev-list ${tagHash}..HEAD`, (err, revListOutput, stderr) => {
 
         if (err) {
           console.log('\x1b[33m%s\x1b[0m', 'Could not find any commits because: ');
@@ -110,7 +102,7 @@ async function notifyShortcut() {
 
       });
     });
-  // });
+  });
 }
 
 // Retrieves pull requests associated with a commit
