@@ -5,7 +5,7 @@ const core = require('@actions/core')
 
 async function notifyShortcut() {
 
-  exec('cd ../../../', (err, ignored, stderr) => {
+  // exec('cd ../../../', (err, ignored, stderr) => {
 
     // go to the main folder
     if (err) {
@@ -110,7 +110,7 @@ async function notifyShortcut() {
 
       });
     });
-  });
+  // });
 }
 
 // Retrieves pull requests associated with a commit
