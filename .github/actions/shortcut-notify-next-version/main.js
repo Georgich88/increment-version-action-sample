@@ -56,18 +56,18 @@ async function notifyShortcut() {
 
     // parse and find required tag
     const tagHashes = showRefOutput.split(/\r?\n/);
-    let tagHash;
-    for (let tagHash of tagHashes) {
+    let commitSha;
+    for (const tagHash of tagHashes) {
       let hashAndTag = tagHash.split(/\s+/);
       if (hashAndTag.length > 1
         && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
-        tagHash = hashAndTag.at(0);
+        commitSha = hashAndTag.at(0);
         break;
       }
     }
 
     // cannot find commit tags
-    if (!tagHash) {
+    if (!commitSha) {
       console.log('\x1b[33m%s\x1b[0m', 'Could not find a commit with current tag: ' + currentVersionTag);
       process.exit(1);
     }
