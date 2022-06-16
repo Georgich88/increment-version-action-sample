@@ -66,4 +66,4 @@ jobs:
       - name: Shortcut notification for version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node .github/shortcut-notify-next-version/main.js "${{ steps.read_current_version.outputs.current-version }}" "${{ steps.increment_version.outputs.next-version }}" "${{secrets.CLUBHOUSE_TOKEN}}" "${{secrets.GITHUB_TOKEN}}"
+        run: node .github/actions/shortcut-notify-next-version/main.js "${{ steps.read_current_version.outputs.current-version }}" "${{ steps.increment_version.outputs.next-version }}" "${{secrets.CLUBHOUSE_TOKEN}}" "${{secrets.GITHUB_TOKEN}}"
