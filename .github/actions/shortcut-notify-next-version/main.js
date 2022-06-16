@@ -13,7 +13,10 @@ async function notifyShortcut() {
   //     console.log('\x1b[31m%s\x1b[0m', stderr);
   //     process.exit(1);
   //   }
-
+  exec('git log', (err, stdout, stderr) => {
+    console.log('\x1b[31m%s\x1b[0m', stderr);
+    console.log('\x1b[31m%s\x1b[0m', stdout);
+  });
     exec('git show-ref --tags', (err, showRefOutput, stderr) => {
 
       // find all tags with output like:
@@ -21,6 +24,7 @@ async function notifyShortcut() {
 
       if (err) {
         console.log('\x1b[33m%s\x1b[0m', 'Could not find any tags because: ');
+        console.log('\x1b[31m%s\x1b[0m', showRefOutput);
         console.log('\x1b[31m%s\x1b[0m', err);
         console.log('\x1b[31m%s\x1b[0m', stderr);
         process.exit(1);
