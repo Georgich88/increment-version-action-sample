@@ -14,12 +14,14 @@ async function notifyShortcut() {
   //     process.exit(1);
   //   }
   exec('git show-ref --tags', (err, stdout, stderr) => {
-    console.log('\x1b[31m%s\x1b[0m', stderr);
     console.log('\x1b[31m%s\x1b[0m', stdout);
   });
 
   exec('git show-ref', (err, stdout, stderr) => {
-    console.log('\x1b[31m%s\x1b[0m', stderr);
+    console.log('\x1b[31m%s\x1b[0m', stdout);
+  });
+
+  exec('git ls-remote --tags --refs', (err, stdout, stderr) => {
     console.log('\x1b[31m%s\x1b[0m', stdout);
   });
 
