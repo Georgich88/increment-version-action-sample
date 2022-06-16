@@ -80,9 +80,8 @@ async function notifyShortcut() {
         process.exit(1);
       }
 
-      // slack notification message
+      // notification message
       let deploymentDescription = `AktivChem-Server is preparing a release for ${currentVersionTag}. This has been deployed to dev and staging. All associated tickets have been labelled ${currentVersionTag} as well. The tickets to be released are:`
-
 
       // find all merged pull requests from the latest version
       const commitHashes = revListOutput.split(/\r?\n/);
@@ -94,7 +93,7 @@ async function notifyShortcut() {
         // find PRs associated with the commit SHA
         const prs = await findPrsByCommitSha(sha, GITHUB_TOKEN);
         console.log('prs', prs);
-        if (!prs) {
+        if (prs) {
           for (const prDetails of prs) {
             // pull request details
             const prNumber = prDetails.number;
