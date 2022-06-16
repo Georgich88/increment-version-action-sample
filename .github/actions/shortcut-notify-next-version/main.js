@@ -57,12 +57,15 @@ async function notifyShortcut() {
     // parse and find required tag
     const tagHashes = showRefOutput.split(/\r?\n/);
     let tagHash;
+
+    console.log('currentVersionTag', currentVersionTag);
     for (let tagHash in tagHashes) {
       let hashAndTag = tagHash.split(/\s+/);
+      console.log('currentVersionTag', hashAndTag);
       if (hashAndTag.length > 1 && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
         tagHash = hashAndTag.at(0);
+        break;
       }
-      console.log('currentVersionTag', currentVersionTag);
       console.log('tag', hashAndTag.at(1).replace('refs/tags/', ''));
 
     }
