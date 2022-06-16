@@ -72,7 +72,7 @@ async function notifyShortcut() {
       process.exit(1);
     }
 
-    exec(`git rev-list ${commitSha}..HEAD`, (err, revListOutput, stderr) => {
+    exec(`git rev-list ${commitSha}..HEAD`, async (err, revListOutput, stderr) => {
 
       if (err) {
         console.log('\x1b[33m%s\x1b[0m', 'Could not find any commits because: ');
@@ -92,7 +92,7 @@ async function notifyShortcut() {
       for (const sha of commitHashes) {
         console.log('sha', sha);
         // find PRs associated with the commit SHA
-        const prs = findPrsByCommitSha(sha, GITHUB_TOKEN);
+        const prs = await findPrsByCommitSha(sha, GITHUB_TOKEN);
         console.log('prs', prs);
         if (!prs) {
           for (const prDetails of prs) {
@@ -102,17 +102,17 @@ async function notifyShortcut() {
             const prTitle = prDetails.title;
             const prLink = prDetails.html_url;
             // retrieve stories from the pull request
-            const prComments = findPrCommentsByPrNumber(prNumber, GITHUB_TOKEN);
-            const storyIds = extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
+            const prComments = await findPrCommentsByPrNumber(prNumber, GITHUB_TOKEN);
+            const storyIds = await extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
             const uniqueStoryIds = [...new Set(storyIds)];
             // update story tags
-            uniqueStoryIds.forEach(async (storyId) => {
+            for (const storyId of uniqueStoryIds) {
               const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
               if (story) {
                 const storyCommentForDeployment = `\n - [${prTitle}](${prLink}) - [${story.name}](${story.app_url})`;
                 deploymentDescription = deploymentDescription.concat(storyCommentForDeployment)
               }
-            })
+            }
           }
         }
       }
