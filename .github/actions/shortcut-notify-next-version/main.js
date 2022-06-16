@@ -14,19 +14,14 @@ async function notifyShortcut() {
       process.exit(1);
     }
 
+    const exec = require('child_process').exec;
     exec('git show-ref --tags', (err, showRefOutput, stderr) => {
 
       // find all tags with output like:
       // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
 
       if (err) {
-        exec('pwd', (err, ignored, stderr) => {
-
-        });
-        exec('ls -a', (err, ignored, stderr) => {
-
-        });
-        console.log('\x1b[33m%s\x1b[0m', 'Could not find any revisions because: ');
+        console.log('\x1b[33m%s\x1b[0m', 'Could not find any tags because: ');
         console.log('\x1b[31m%s\x1b[0m', err);
         console.log('\x1b[31m%s\x1b[0m', stderr);
         process.exit(1);
@@ -58,6 +53,7 @@ async function notifyShortcut() {
         process.exit(1);
       }
 
+      const exec = require('child_process').exec;
       exec(`git rev-list ${tagHash}..HEAD`, (err, revListOutput, stderr) => {
 
         if (err) {
@@ -67,10 +63,7 @@ async function notifyShortcut() {
         }
 
         // slack notification message
-        let deploymentDescription = `AktivChem-Server is preparing a release for ${currentVersionTag}. 
-      This has been deployed to dev and staging. 
-      All associated tickets have been labelled ${currentVersionTag} as well. 
-      The tickets to be released are:`
+        let deploymentDescription = `AktivChem-Server is preparing a release for ${currentVersionTag}. This has been deployed to dev and staging. All associated tickets have been labelled ${currentVersionTag} as well. The tickets to be released are:`
 
 
         // find all merged pull requests from the latest version
