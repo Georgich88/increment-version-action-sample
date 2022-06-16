@@ -89,7 +89,7 @@ async function notifyShortcut() {
       core.info(`Found ${commitHashes.length} commits from the ${currentVersionTag}`)
 
       // prepare description and update tags for stories associated with PRs
-      for (const sha in commitHashes) {
+      for (const sha of commitHashes) {
         // find PRs associated with the commit SHA
         const prs = findPrsByCommitSha(sha, GITHUB_TOKEN);
         if (!prs) {
