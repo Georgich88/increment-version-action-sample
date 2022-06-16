@@ -90,20 +90,25 @@ async function notifyShortcut() {
       // prepare description and update tags for stories associated with PRs
       for (const sha of commitHashes) {
         console.log('sha', sha);
+
         // find PRs associated with the commit SHA
         const prs = await findPrsByCommitSha(sha, GITHUB_TOKEN);
         console.log('prs', prs);
+
         if (prs) {
           for (const prDetails of prs) {
+
             // pull request details
-            const prNumber = prDetails.number;
-            const prDescription = prDetails.body;
-            const prTitle = prDetails.title;
-            const prLink = prDetails.html_url;
+            const prNumber = prDetails.number != null ? prDetails.number : '';
+            const prDescription = prDetails.body != null ? prDetails.body : '';
+            const prTitle = prDetails.title != null ? prDetails.title : '';
+            const prLink = prDetails.html_url != null ? prDetails.html_url : '';
+
             // retrieve stories from the pull request
             const prComments = await findPrCommentsByPrNumber(prNumber, GITHUB_TOKEN);
             const storyIds = await extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
             const uniqueStoryIds = [...new Set(storyIds)];
+
             // update story tags
             for (const storyId of uniqueStoryIds) {
               const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
