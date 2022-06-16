@@ -61,12 +61,15 @@ async function notifyShortcut() {
     console.log('tagHashes', tagHashes);
     for (let tagHash in tagHashes) {
       let hashAndTag = tagHash.split(/\s+/);
-      console.log('hashAndTag', hashAndTag);
-      if (hashAndTag.length > 1 && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
+      if (hashAndTag.length > 1
+        && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
         tagHash = hashAndTag.at(0);
         break;
       }
-      console.log('tag', hashAndTag.at(1).replace('refs/tags/', ''));
+      if (hashAndTag.length > 1) {
+        console.log('compare', currentVersionTag === hashAndTag.at(1).replace('refs/tags/', ''));
+        console.log('tag', hashAndTag.at(1).replace('refs/tags/', ''));
+      }
 
     }
 
