@@ -72,7 +72,7 @@ async function notifyShortcut() {
       process.exit(1);
     }
 
-    exec(`git rev-list ${tagHash}..HEAD`, (err, revListOutput, stderr) => {
+    exec(`git rev-list ${commitSha}..HEAD`, (err, revListOutput, stderr) => {
 
       if (err) {
         console.log('\x1b[33m%s\x1b[0m', 'Could not find any commits because: ');
