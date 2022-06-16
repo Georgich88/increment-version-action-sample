@@ -90,6 +90,7 @@ async function notifyShortcut() {
 
       // prepare description and update tags for stories associated with PRs
       for (const sha of commitHashes) {
+        console.log('sha', sha);
         // find PRs associated with the commit SHA
         const prs = findPrsByCommitSha(sha, GITHUB_TOKEN);
         if (!prs) {
