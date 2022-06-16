@@ -93,6 +93,7 @@ async function notifyShortcut() {
         console.log('sha', sha);
         // find PRs associated with the commit SHA
         const prs = findPrsByCommitSha(sha, GITHUB_TOKEN);
+        console.log('prs', prs);
         if (!prs) {
           for (const prDetails of prs) {
             // pull request details
