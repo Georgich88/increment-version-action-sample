@@ -13,7 +13,7 @@ async function notifyShortcut() {
   //     console.log('\x1b[31m%s\x1b[0m', stderr);
   //     process.exit(1);
   //   }
-  exec('git log', (err, stdout, stderr) => {
+  exec('git show-ref --tags', (err, stdout, stderr) => {
     console.log('\x1b[31m%s\x1b[0m', stderr);
     console.log('\x1b[31m%s\x1b[0m', stdout);
   });
@@ -23,7 +23,7 @@ async function notifyShortcut() {
     console.log('\x1b[31m%s\x1b[0m', stdout);
   });
 
-  exec('git show-ref --tags', (err, showRefOutput, stderr) => {
+  exec('git ls-remote --tags --refs', (err, showRefOutput, stderr) => {
 
     // find all tags with output like:
     // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
