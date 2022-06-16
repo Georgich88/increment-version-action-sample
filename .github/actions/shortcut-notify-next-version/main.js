@@ -20,6 +20,12 @@ async function notifyShortcut() {
       // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
 
       if (err) {
+        exec('pwd', (err, ignored, stderr) => {
+
+        });
+        exec('ls -a', (err, ignored, stderr) => {
+
+        });
         console.log('\x1b[33m%s\x1b[0m', 'Could not find any revisions because: ');
         console.log('\x1b[31m%s\x1b[0m', err);
         console.log('\x1b[31m%s\x1b[0m', stderr);
