@@ -57,20 +57,13 @@ async function notifyShortcut() {
     // parse and find required tag
     const tagHashes = showRefOutput.split(/\r?\n/);
     let tagHash;
-    console.log('currentVersionTag', currentVersionTag);
-    console.log('tagHashes', tagHashes);
-    for (let tagHash in tagHashes) {
+    for (let tagHash of tagHashes) {
       let hashAndTag = tagHash.split(/\s+/);
       if (hashAndTag.length > 1
         && currentVersionTag === hashAndTag.at(1).replace('refs/tags/', '')) {
         tagHash = hashAndTag.at(0);
         break;
       }
-      if (hashAndTag.length > 1) {
-        console.log('compare', currentVersionTag === hashAndTag.at(1).replace('refs/tags/', ''));
-        console.log('tag', hashAndTag.at(1).replace('refs/tags/', ''));
-      }
-
     }
 
     // cannot find commit tags
@@ -100,7 +93,7 @@ async function notifyShortcut() {
         // find PRs associated with the commit SHA
         const prs = findPrsByCommitSha(commitSha, GITHUB_TOKEN);
         if (!prs) {
-          for (const prDetails in prs) {
+          for (const prDetails of prs) {
             // pull request details
             const prNumber = prDetails.number;
             const prDescription = prDetails.body;
