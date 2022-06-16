@@ -59,7 +59,7 @@ jobs:
 
       - name: Install JS dependencies
         working-directory: .github/actions/shortcut-notify-next-version
-        run: yarn
+        run: npm i babel-cli -g
         env:
           NODE_AUTH_TOKEN: ""
 

@@ -14,7 +14,14 @@ async function notifyShortcut() {
       process.exit(1);
     }
 
-    const exec = require('child_process').exec;
+    exec('pwd', (err, stdout, stderr) => {
+      console.log('\x1b[31m%s\x1b[0m', stdout);
+    });
+
+    exec('ls', (err, stdout, stderr) => {
+      console.log('\x1b[31m%s\x1b[0m', stdout);
+    });
+
     exec('git show-ref --tags', (err, showRefOutput, stderr) => {
 
       // find all tags with output like:
@@ -53,7 +60,6 @@ async function notifyShortcut() {
         process.exit(1);
       }
 
-      const exec = require('child_process').exec;
       exec(`git rev-list ${tagHash}..HEAD`, (err, revListOutput, stderr) => {
 
         if (err) {
