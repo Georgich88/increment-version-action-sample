@@ -66,4 +66,4 @@ jobs:
 
       - name: Print release description
         id: print_release_description
-        run: echo ${{ steps.prepare_release_description.outputs.current-version }}
+        run: echo ${{ steps.prepare_release_description.outputs.deployment-description }}
