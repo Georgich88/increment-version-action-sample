@@ -62,10 +62,8 @@ async function notifyShortcut() {
       const commitHashes = revListOutput.split(/\r?\n/);
       core.info(`Found ${commitHashes.length} commits from the ${currentVersionTag}`)
 
-      const prs = [];
-      console.log('sha', commitHashes);
-
       // retrieve PRs for commits
+      const prs = [];
       for (const sha of commitHashes) {
         if (!sha || !sha.trim()) continue;
         // find PRs associated with the commit SHA
@@ -80,6 +78,7 @@ async function notifyShortcut() {
         uniquePrNumbers.add(prDetails.number);
         uniqueOrderedPrs.push(prDetails);
       }
+      core.info(`Found ${uniqueOrderedPrs.length} PRs from the ${currentVersionTag}`)
 
       // prepare description and update tags for stories associated with PRs
       for (const prDetails of uniqueOrderedPrs) {
