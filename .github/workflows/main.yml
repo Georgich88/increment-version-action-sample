@@ -44,15 +44,15 @@ jobs:
           current-version: ${{ steps.read_current_version.outputs.current-version }}
           version-fragment: ${{ github.event.inputs.version-fragment }} 
 
-#      - name: Commit next version ${{ steps.increment_version.outputs.next-version }}
-#        id: commit_next_version
-#        uses: ./.github/actions/commit-next-version
-#        with:
-#          current-version: ${{ steps.read_current_version.outputs.current-version }}
-#          next-version: ${{ steps.increment_version.outputs.next-version }}
-#          current-version-file: ${{github.event.inputs.current-version-file}}
-#        env:
-#          BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
+      - name: Commit next version ${{ steps.increment_version.outputs.next-version }}
+        id: commit_next_version
+        uses: ./.github/actions/commit-next-version
+        with:
+          current-version: ${{ steps.read_current_version.outputs.current-version }}
+          next-version: ${{ steps.increment_version.outputs.next-version }}
+          current-version-file: ${{github.event.inputs.current-version-file}}
+        env:
+          BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
 
       - name: Shortcut notification for next version ${{ steps.increment_version.outputs.next-version }}
         id: prepare_release_description
