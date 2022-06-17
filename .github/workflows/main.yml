@@ -53,13 +53,16 @@ jobs:
 
       - name: Install JS dependencies
         working-directory: .github/actions/shortcut-notify-next-version
-        run: |
-          npm i babel-cli -g
-          yarn
+        run: yarn
         env:
           NODE_AUTH_TOKEN: ""
 
-      - name: Shortcut notification for next version
+      - name: Shortcut notification for next version ${{ steps.increment_version.outputs.next-version }}
+        id: prepare_release_description
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .github/actions/shortcut-notify-next-version/main.js "${{ steps.read_current_branch_name.outputs.branch-name }}" "${{ steps.read_current_version.outputs.current-version }}" "${{ steps.increment_version.outputs.next-version }}" "${{secrets.CLUBHOUSE_TOKEN}}" "${{secrets.GITHUB_TOKEN}}"
+
+      - name: Print release description
+        id: print_release_description
+        run: echo ${{ steps.prepare_release_description.outputs.current-version }}
