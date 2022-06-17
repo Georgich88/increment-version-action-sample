@@ -5,10 +5,13 @@ branding:
   color: 'purple'
 inputs:
   current-version:
-    description: 'The current version to increment'
+    description: 'The current version'
     required: true
   next-version:
     description: 'The next (incremented) version'
+    required: true
+  current-version-file:
+    description: 'The file where to replace a current version '
     required: true
 runs:
   using: 'docker'
@@ -16,4 +19,4 @@ runs:
   args:
     - ${{ inputs.current-version }}
     - ${{ inputs.next-version }}
-    - ${{ inputs.next-version }}
+    - ${{ inputs.current-version-file }}

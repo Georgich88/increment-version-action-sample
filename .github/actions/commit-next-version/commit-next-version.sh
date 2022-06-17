@@ -17,9 +17,6 @@ main() {
   current_version_file="$3"
   tag="v"$next_version;
 
-  # go to the main folder
-  cd ../../../
-
   # check out the branch and set user configs
   git checkout $BRANCH_NAME
   git config user.name "${GITHUB_ACTOR}"

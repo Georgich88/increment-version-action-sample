@@ -46,23 +46,23 @@ jobs:
 
 #      - name: Commit next version ${{ steps.increment_version.outputs.next-version }}
 #        id: commit_next_version
-#        working-directory: .github/actions/commit-next-version
-#        run: |
-#          bash commit-next-version.sh ${{ steps.read_current_version.outputs.current-version }} ${{ steps.increment_version.outputs.next-version }} ${{github.event.inputs.current-version-file}}
+#        uses: ./.github/actions/commit-next-version
+#        with:
+#          current-version: ${{ steps.read_current_version.outputs.current-version }}
+#          next-version: ${{ steps.increment_version.outputs.next-version }}
+#          current-version-file: ${{github.event.inputs.current-version-file}}
 #        env:
 #          BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
 
-      - name: Install JS dependencies
-        working-directory: .github/actions/shortcut-notify-next-version
-        run: yarn
-        env:
-          NODE_AUTH_TOKEN: ""
-
       - name: Shortcut notification for next version ${{ steps.increment_version.outputs.next-version }}
         id: prepare_release_description
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node .github/actions/shortcut-notify-next-version/main.js "${{ steps.read_current_branch_name.outputs.branch-name }}" "${{ steps.read_current_version.outputs.current-version }}" "${{ steps.increment_version.outputs.next-version }}" "${{secrets.CLUBHOUSE_TOKEN}}" "${{secrets.GITHUB_TOKEN}}"
+        uses: ./.github/actions/shortcut-notify-next-version/
+        with:
+          branch-name: ${{ steps.read_current_branch_name.outputs.branch-name }}
+          current-version: ${{ steps.read_current_version.outputs.current-version }}
+          next-version: ${{ steps.increment_version.outputs.next-version }}
+          shortcut-token: ${{ secrets.CLUBHOUSE_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}"
 
       - name: Print release description
         id: print_release_description

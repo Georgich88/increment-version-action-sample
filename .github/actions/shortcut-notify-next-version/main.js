@@ -18,11 +18,11 @@ async function notifyShortcut() {
     }
 
     // set action params
-    const CURRENT_BRANCH = process.argv[2]
-    const CURRENT_VERSION = process.argv[3]
-    const NEXT_VERSION = process.argv[4]
-    const SHORTCUT_TOKEN = process.argv[5]
-    const GITHUB_TOKEN = process.argv[6]
+    const CURRENT_BRANCH = core.getInput('branch-name');// = process.argv[2]
+    const CURRENT_VERSION = core.getInput('current-version');// = process.argv[3]
+    const NEXT_VERSION = core.getInput('next-version'); //= process.argv[4]
+    const SHORTCUT_TOKEN = core.getInput('shortcut-token');//= process.argv[5]
+    const GITHUB_TOKEN = core.getInput('github-token'); //=process.argv[6]
 
     // version tags
     const currentVersionTag = 'v' + CURRENT_VERSION;
