@@ -18,10 +18,11 @@ async function notifyShortcut() {
     }
 
     // set action params
-    const CURRENT_VERSION = process.argv[2]
-    const NEXT_VERSION = process.argv[3]
-    const SHORTCUT_TOKEN = process.argv[4]
-    const GITHUB_TOKEN = process.argv[5]
+    const CURRENT_BRANCH = process.argv[2]
+    const CURRENT_VERSION = process.argv[3]
+    const NEXT_VERSION = process.argv[4]
+    const SHORTCUT_TOKEN = process.argv[5]
+    const GITHUB_TOKEN = process.argv[6]
 
     // version tags
     const currentVersionTag = 'v' + CURRENT_VERSION;
@@ -45,7 +46,8 @@ async function notifyShortcut() {
       process.exit(1);
     }
 
-    exec(`git rev-list ${commitSha}..HEAD`, async (err, revListOutput, stderr) => {
+    // get all commits earlier than current version commit
+    exec(`git rev-list ${commitSha}..HEAD --branches=${CURRENT_BRANCH}`, async (err, revListOutput, stderr) => {
 
       if (err) {
         console.log('\x1b[33m%s\x1b[0m', 'Could not find any commits because: ');
