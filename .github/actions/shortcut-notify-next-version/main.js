@@ -73,10 +73,17 @@ async function notifyShortcut() {
       }
 
       // prepare description and update tags for stories associated with PRs
-      const uniquePrs = prs.filter((value, index, self) => self.indexOf(value) === index);
-      console.log('uniquePrs', uniquePrs);
+      const uniquePrNumbers = new Set();
+      const uniqueOrderedPrs = [];
+      for (const prDetails of uniqueOrderedPrs) {
+        if (uniquePrNumbers.has(prDetails.number)) continue;
+        uniquePrNumbers.add(prDetails.number);
+        uniqueOrderedPrs.push(prDetails);
+      }
 
-      for (const prDetails of uniquePrs) {
+      console.log('uniqueOrderedPrs', uniqueOrderedPrs);
+
+      for (const prDetails of uniqueOrderedPrs) {
         // pull request details
         const prNumber = prDetails.number != null ? prDetails.number : '';
         const prDescription = prDetails.body != null ? prDetails.body : '';
