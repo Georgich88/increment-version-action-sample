@@ -72,7 +72,7 @@ async function notifyShortcut() {
         prs.push(...await findPrsByCommitSha(sha, GITHUB_TOKEN));
       }
 
-      // prepare description and update tags for stories associated with PRs
+      //
       const uniquePrNumbers = new Set();
       const uniqueOrderedPrs = [];
       for (const prDetails of prs) {
@@ -83,6 +83,7 @@ async function notifyShortcut() {
 
       console.log('uniqueOrderedPrs', uniqueOrderedPrs);
 
+      // prepare description and update tags for stories associated with PRs
       for (const prDetails of uniqueOrderedPrs) {
         // pull request details
         const prNumber = prDetails.number != null ? prDetails.number : '';
