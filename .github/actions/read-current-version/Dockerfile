@@ -5,7 +5,7 @@
 #ENTRYPOINT ["/usr/bin/read-current-version.sh"]
 
 FROM alpine:3.10
-COPY read-current-version.sh /usr/bin/
+COPY read-current-version.sh /usr/bin/read-current-version.sh
 RUN apk add --no-cache bash
 RUN ln -s /usr/bin/read-current-version.sh
 ENTRYPOINT ["read-current-version.sh"]
