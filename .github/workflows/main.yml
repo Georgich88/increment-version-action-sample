@@ -7,7 +7,7 @@ on:
         description: 'The current version file to increment'
         default: 'demo/chem101-server.platform-conventions.gradle'
         required: true
-      release-type:
+      version-fragment:
         type: choice
         description: 'The type of release: fix, minor or major'
         required: true
@@ -39,9 +39,10 @@ jobs:
 
       - name: Increment version ${{ steps.read_current_version.outputs.current-version }}
         id: increment_version
-        working-directory: .github/actions/increment-version
-        run: |
-          bash increment-version.sh ${{ steps.read_current_version.outputs.current-version }} ${{ github.event.inputs.release-type }} 
+        uses: ./.github/actions/increment-version
+        with:
+          current-version: ${{ steps.read_current_version.outputs.current-version }}
+          version-fragment: ${{ github.event.inputs.version-fragment }} 
 
 #      - name: Commit next version ${{ steps.increment_version.outputs.next-version }}
 #        id: commit_next_version
