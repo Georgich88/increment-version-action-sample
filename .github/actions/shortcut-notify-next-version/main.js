@@ -60,46 +60,46 @@ async function notifyShortcut() {
       const commitHashes = revListOutput.split(/\r?\n/);
       core.info(`Found ${commitHashes.length} commits from the ${currentVersionTag}`)
 
-      // prepare description and update tags for stories associated with PRs
+      const prs = [];
+      console.log('sha', commitHashes);
+
+      // retrieve PRs for commits
       for (const sha of commitHashes) {
-
-        console.log('sha', sha);
         if (!sha || !sha.trim()) continue;
-
         // find PRs associated with the commit SHA
-        const prs = await findPrsByCommitSha(sha, GITHUB_TOKEN);
-        console.log('prs', prs);
+        prs.push(...await findPrsByCommitSha(sha, GITHUB_TOKEN));
+      }
 
-        if (prs) {
-          for (const prDetails of prs) {
+      // prepare description and update tags for stories associated with PRs
+      const uniquePrs = prs.filter((value, index, self) => self.indexOf(value) === index);
 
-            // pull request details
-            const prNumber = prDetails.number != null ? prDetails.number : '';
-            const prDescription = prDetails.body != null ? prDetails.body : '';
-            const prTitle = prDetails.title != null ? prDetails.title : '';
-            const prLink = prDetails.html_url != null ? prDetails.html_url : '';
+      for (const prDetails of uniquePrs) {
 
-            // retrieve stories from the pull request
-            const prComments = await findPrCommentsByPrNumber(prNumber, GITHUB_TOKEN);
-            const storyIds = await extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
-            const uniqueStoryIds = [...new Set(storyIds)];
+        // pull request details
+        const prNumber = prDetails.number != null ? prDetails.number : '';
+        const prDescription = prDetails.body != null ? prDetails.body : '';
+        const prTitle = prDetails.title != null ? prDetails.title : '';
+        const prLink = prDetails.html_url != null ? prDetails.html_url : '';
 
-            // update story tags
-            for (const storyId of uniqueStoryIds) {
-              const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
-              if (story) {
-                const storyCommentForDeployment = `\n - [${prTitle}](${prLink}) - [${story.name}](${story.app_url})`;
-                deploymentDescription = deploymentDescription.concat(storyCommentForDeployment)
-              }
-            }
+        // retrieve stories from the pull request
+        const prComments = await findPrCommentsByPrNumber(prNumber, GITHUB_TOKEN);
+        const storyIds = await extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
+        const uniqueStoryIds = storyIds.filter((value, index, self) => self.indexOf(value) === index);
 
-            // if there is no story, just add pr info to final description
-            if (uniqueStoryIds.length === 0) {
-              deploymentDescription = deploymentDescription.concat(`\n - [${prTitle}](${prLink})`)
-            }
-
+        // update story tags
+        for (const storyId of uniqueStoryIds) {
+          const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
+          if (story) {
+            const storyCommentForDeployment = `\n - [${prTitle}](${prLink}) - [${story.name}](${story.app_url})`;
+            deploymentDescription = deploymentDescription.concat(storyCommentForDeployment)
           }
         }
+
+        // if there is no story, just add pr info to final description
+        if (uniqueStoryIds.length === 0) {
+          deploymentDescription = deploymentDescription.concat(`\n - [${prTitle}](${prLink})`)
+        }
+
       }
 
       core.info(`${deploymentDescription}`)
