@@ -109,7 +109,7 @@ async function notifyShortcut() {
 
     });
   });
-  // });
+
 }
 
 // Retrieves pull requests associated with a commit
