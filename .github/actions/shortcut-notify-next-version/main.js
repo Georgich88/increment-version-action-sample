@@ -75,7 +75,7 @@ async function notifyShortcut() {
       // prepare description and update tags for stories associated with PRs
       const uniquePrNumbers = new Set();
       const uniqueOrderedPrs = [];
-      for (const prDetails of uniqueOrderedPrs) {
+      for (const prDetails of prs) {
         if (uniquePrNumbers.has(prDetails.number)) continue;
         uniquePrNumbers.add(prDetails.number);
         uniqueOrderedPrs.push(prDetails);
