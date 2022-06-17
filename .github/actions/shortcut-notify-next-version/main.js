@@ -72,7 +72,7 @@ async function notifyShortcut() {
         prs.push(...await findPrsByCommitSha(sha, GITHUB_TOKEN));
       }
 
-      //
+      // only unique prs
       const uniquePrNumbers = new Set();
       const uniqueOrderedPrs = [];
       for (const prDetails of prs) {
@@ -80,8 +80,6 @@ async function notifyShortcut() {
         uniquePrNumbers.add(prDetails.number);
         uniqueOrderedPrs.push(prDetails);
       }
-
-      console.log('uniqueOrderedPrs', uniqueOrderedPrs);
 
       // prepare description and update tags for stories associated with PRs
       for (const prDetails of uniqueOrderedPrs) {
@@ -97,17 +95,18 @@ async function notifyShortcut() {
         const uniqueStoryIds = storyIds.filter((value, index, self) => self.indexOf(value) === index);
 
         // update story tags
+        let storyFound = false;
         for (const storyId of uniqueStoryIds) {
           const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
           if (story) {
+            storyFound = true;
             const storyCommentForDeployment = `\n - [${prTitle}](${prLink}) - [${story.name}](${story.app_url})`;
             deploymentDescription = deploymentDescription.concat(storyCommentForDeployment)
           }
         }
 
-        console.log('uniqueStoryIds', uniqueStoryIds);
         // if there is no story, just add pr info to final description
-        if (uniqueStoryIds.length === 0) {
+        if (!storyFound) {
           deploymentDescription = deploymentDescription.concat(`\n - [${prTitle}](${prLink})`)
         }
 
