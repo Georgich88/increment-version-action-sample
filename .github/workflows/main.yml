@@ -33,9 +33,9 @@ jobs:
 
       - name: Getting current version
         id: read_current_version
-        working-directory: .github/actions/read-current-version
-        run: |
-          bash read-current-version.sh ${{github.event.inputs.current-version-file}}
+        uses: ./.github/actions/read-current-version/
+        with:
+          current-version-file: ${{github.event.inputs.current-version-file}}
 
       - name: Increment version ${{ steps.read_current_version.outputs.current-version }}
         id: increment_version
