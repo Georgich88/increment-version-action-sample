@@ -106,7 +106,6 @@ async function notifyShortcut() {
 
         // if there is no story, just add pr info to final description
         if (!storyFound) {
-          console.log('\x1b[31m%s\x1b[0m', `[${prTitle}](${prLink})`);
           deploymentDescription = deploymentDescription.concat(`\n - [${prTitle}](${prLink})`)
         }
 
