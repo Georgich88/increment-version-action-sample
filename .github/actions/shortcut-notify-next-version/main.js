@@ -92,6 +92,12 @@ async function notifyShortcut() {
                 deploymentDescription = deploymentDescription.concat(storyCommentForDeployment)
               }
             }
+
+            // if there is no story, just add pr info to final description
+            if (uniqueStoryIds.length === 0) {
+              deploymentDescription = deploymentDescription.concat(`\n - [${prTitle}](${prLink})`)
+            }
+
           }
         }
       }
