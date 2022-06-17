@@ -5,36 +5,9 @@ const core = require('@actions/core')
 
 async function notifyShortcut() {
 
-  // exec('cd ../../../', (err, ignored, stderr) => {
-  //
-  //   // go to the main folder
-  //   if (err) {
-  //     console.log('\x1b[33m%s\x1b[0m', 'Could not go to main folder: ');
-  //     console.log('\x1b[31m%s\x1b[0m', stderr);
-  //     process.exit(1);
-  //   }
-  exec('git show-ref --tags', (err, stdout, stderr) => {
-    console.log('\x1b[31m%s\x1b[0m', 'git show-ref --tags');
-    console.log('\x1b[31m%s\x1b[0m', stdout);
-    console.log('\x1b[31m%s\x1b[0m', stderr);
-  });
-
-  exec('git show-ref', (err, stdout, stderr) => {
-    console.log('\x1b[31m%s\x1b[0m', 'git show-ref');
-    console.log('\x1b[31m%s\x1b[0m', stdout);
-    console.log('\x1b[31m%s\x1b[0m', stderr);
-  });
-
-  exec('git ls-remote --tags --refs', (err, stdout, stderr) => {
-    console.log('\x1b[31m%s\x1b[0m', 'git ls-remote --tags --refs');
-    console.log('\x1b[31m%s\x1b[0m', stdout);
-    console.log('\x1b[31m%s\x1b[0m', stderr);
-  });
-
+  // find all tags with output like:
+  // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
   exec('git show-ref --tags', (err, showRefOutput, stderr) => {
-
-    // find all tags with output like:
-    // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
 
     if (err) {
       console.log('\x1b[33m%s\x1b[0m', 'Could not find any tags because: ');
@@ -54,7 +27,7 @@ async function notifyShortcut() {
     const currentVersionTag = 'v' + CURRENT_VERSION;
     const nextVersionTag = 'v' + NEXT_VERSION;
 
-    // parse and find required tag
+    // parse output from `git show-ref --tags` and find required tag
     const tagHashes = showRefOutput.split(/\r?\n/);
     let commitSha;
     for (const tagHash of tagHashes) {

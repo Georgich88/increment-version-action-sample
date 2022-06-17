@@ -37,19 +37,11 @@ jobs:
         run: |
           bash read-current-version.sh ${{github.event.inputs.current-version-file}}
 
-      - name: Print current version ${{ steps.read_current_version.outputs.current-version }}
-        id: print_current_version
-        run: echo ${{ steps.read_current_version.outputs.current-version }}
-
       - name: Increment version ${{ steps.read_current_version.outputs.current-version }}
         id: increment_version
         working-directory: .github/actions/increment-version
         run: |
           bash increment-version.sh ${{ steps.read_current_version.outputs.current-version }} ${{ github.event.inputs.release-type }} 
-
-      - name: Print next (incremented) version ${{ steps.read_current_version.outputs.next-version }}
-        id: print_incremented_version
-        run: echo ${{ steps.increment_version.outputs.next-version }}
 
 #      - name: Commit next version ${{ steps.increment_version.outputs.next-version }}
 #        id: commit_next_version
@@ -67,7 +59,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ""
 
-      - name: Shortcut notification for version
+      - name: Shortcut notification for next version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .github/actions/shortcut-notify-next-version/main.js "${{ steps.read_current_version.outputs.current-version }}" "${{ steps.increment_version.outputs.next-version }}" "${{secrets.CLUBHOUSE_TOKEN}}" "${{secrets.GITHUB_TOKEN}}"
