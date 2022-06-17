@@ -25,4 +25,4 @@ outputs:
     description: 'The deployment description'
 runs:
   using: 'node16'
-  main: 'index.js'
+  main: 'main.js'
