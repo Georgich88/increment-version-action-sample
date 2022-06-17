@@ -12,7 +12,7 @@ set -euo pipefail
 main() {
   current_version_file="$1";
   echo $current_version_file
-  current_version=$(cat "../../../"$current_version_file"" | grep "ext\.versionNumber = '*'" | head -1 | awk '{ gsub("'\''","");  printf("%s",$3)}')
+  current_version=$(cat "./"$current_version_file"" | grep "ext\.versionNumber = '*'" | head -1 | awk '{ gsub("'\''","");  printf("%s",$3)}')
   echo "*** successfully get current version from file $current_version_file: current_version"
   echo ::set-output name=current-version::"$current_version"
 }
