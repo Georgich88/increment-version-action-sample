@@ -56,7 +56,7 @@ jobs:
 
       - name: Shortcut notification for next version ${{ steps.increment_version.outputs.next-version }}
         id: prepare_release_description
-        uses: /.github/actions/shortcut-notify-next-version/
+        uses: .github/actions/shortcut-notify-next-version/
         with:
           branch-name: ${{ steps.read_current_branch_name.outputs.branch-name }}
           current-version: ${{ steps.read_current_version.outputs.current-version }}
