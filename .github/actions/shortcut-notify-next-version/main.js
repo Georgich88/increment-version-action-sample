@@ -72,9 +72,9 @@ async function notifyShortcut() {
 
       // prepare description and update tags for stories associated with PRs
       const uniquePrs = prs.filter((value, index, self) => self.indexOf(value) === index);
+      console.log('uniquePrs', uniquePrs);
 
       for (const prDetails of uniquePrs) {
-
         // pull request details
         const prNumber = prDetails.number != null ? prDetails.number : '';
         const prDescription = prDetails.body != null ? prDetails.body : '';
