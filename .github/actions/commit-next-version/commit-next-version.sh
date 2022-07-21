@@ -15,7 +15,7 @@ main() {
   current_version="$1"
   next_version="$2"
   current_version_file="$3"
-  timestamp=$(date+'%Y-%m-%d-%H-%M-%S')
+  timestamp=$(date +'%Y-%m-%d-%H-%M-%S')
   tag="v"$next_version
   release_branch="v""$next_version""-""$timestamp"
 
