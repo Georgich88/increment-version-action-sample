@@ -18,7 +18,7 @@ main() {
   timestamp=$(date +'%Y-%m-%d-%H-%M-%S')
   tag="v"$next_version
   release_branch="v""$next_version""-""$timestamp"
-  github_api_url=https://api.github.com/repos/"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"
+  github_api_url=https://api.github.com/repos"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"
 
   # check out the branch and set user configs
   git checkout "$BRANCH_NAME"
