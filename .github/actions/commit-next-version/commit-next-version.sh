@@ -39,12 +39,18 @@ main() {
   pr_url=$(gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag")
   echo "$pr_url"
   curl --request POST \
-    --url "$pr_url" \
+    --url "$pr_url"/reviews \
     --header "authorization: Bearer $GITHUB_TOKEN" \
     --header "content-type: application/json" \
-    -d "{\"event\":\"APPROVE\"}"
+    -d "{\"event\":\"APPROVE\"}" | cat
 
-  gh pr merge --admin --body "$tag" --merge
+  curl --request PUT \
+    --url "$pr_url"/merge \
+    --header "authorization: Bearer $GITHUB_TOKEN" \
+    --header "content-type: application/json" | cat
+
+
+  # gh pr merge --admin --body "$tag" --merge
 
   # push tag
   git tag -a "$tag" -m "$tag"
