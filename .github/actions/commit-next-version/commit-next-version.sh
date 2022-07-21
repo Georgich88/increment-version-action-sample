@@ -38,6 +38,7 @@ main() {
     --header "Accept: application/vnd.github+json" \
     --header "Authorization: token ${GITHUB_TOKEN}" \
     -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
+  echo "PR URL:$pr_url"
 
   curl --X POST \
     --url "$pr_url/reviews" \
