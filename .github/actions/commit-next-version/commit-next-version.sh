@@ -37,26 +37,31 @@ main() {
   echo "${GITHUB_OWNER}"
   echo "$github_api_url"/pulls
 
-  pr_url=$(curl \
-    -X POST \
-    --url "$github_api_url"/pulls \
-    --header "Accept: application/vnd.github+json" \
-    --header "Authorization: token ${GITHUB_TOKEN}" \
-    -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
-  echo "PR URL:$pr_url"
+  pr_url=$(gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch")
 
-  curl --X POST \
-    --url "$pr_url/reviews" \
-    --header "authorization: Bearer ${GITHUB_TOKEN}" \
-    --header "Accept: application/vnd.github+json" \
-    -d '{"event":"APPROVE"}'
 
-  curl \
-    -X PUT \
-    --url "$pr_url"/merge \
-    --header "authorization: Bearer ${GITHUB_TOKEN}" \
-    --header "Accept: application/vnd.github+json" \
-    -d '{"merge_method":"rebase"}'
+#  $(curl \
+#    -X POST \
+#    --url "$github_api_url"/pulls \
+#    --header "Accept: application/vnd.github+json" \
+#    --header "Authorization: token ${GITHUB_TOKEN}" \
+#    -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
+#  echo "PR URL:$pr_url"
+
+  gh pr review --approve
+#  curl --X POST \
+#    --url "$pr_url/reviews" \
+#    --header "authorization: Bearer ${GITHUB_TOKEN}" \
+#    --header "Accept: application/vnd.github+json" \
+#    -d '{"event":"APPROVE"}'
+
+  gh pr merge --admin --rebase --delete-branch
+#  curl \
+#    -X PUT \
+#    --url "$pr_url"/merge \
+#    --header "authorization: Bearer ${GITHUB_TOKEN}" \
+#    --header "Accept: application/vnd.github+json" \
+#    -d '{"merge_method":"rebase"}'
 
   # push tag
   git tag -a "$tag" -m "$tag"
