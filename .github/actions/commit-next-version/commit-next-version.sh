@@ -34,22 +34,22 @@ main() {
   git push -u origin "$release_branch"
   pr_url=$(curl \
     -X POST \
-    -- url https://api.github.com/repos/"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"/pulls \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: token ${GITHUB_TOKEN}" \
+    -- url "https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/pulls" \
+    --header "Accept: application/vnd.github+json" \
+    --header "Authorization: token ${GITHUB_TOKEN}" \
     -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
 
   curl --X POST \
-    --url "$pr_url"/reviews \
-    -H "authorization: Bearer ${GITHUB_TOKEN}" \
-    -H "Accept: application/vnd.github+json" \
+    --url "$pr_url/reviews" \
+    --header "authorization: Bearer ${GITHUB_TOKEN}" \
+    --header "Accept: application/vnd.github+json" \
     -d '{"event":"APPROVE"}'
 
   curl \
     -X PUT \
     --url "$pr_url"/merge \
-    -H "authorization: Bearer ${GITHUB_TOKEN}" \
-    -H "Accept: application/vnd.github+json" \
+    --header "authorization: Bearer ${GITHUB_TOKEN}" \
+    --header "Accept: application/vnd.github+json" \
     -d '{"merge_method":"rebase"}'
 
   # push tag
