@@ -32,9 +32,9 @@ main() {
 
   # push new version
   git push -u origin "$release_branch"
-  gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch"
-  gh pr review --approve
-  gh pr merge --admin --rebase --delete-branch
+  github-cli pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch"
+  github-cli pr review --approve
+  github-cli pr merge --admin --rebase --delete-branch
 
   # push tag
   git tag -a "$tag" -m "$tag"
