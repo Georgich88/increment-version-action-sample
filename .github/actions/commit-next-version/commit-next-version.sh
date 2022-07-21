@@ -35,10 +35,11 @@ main() {
   git push -u origin "$release_branch"
   echo "$github_api_url"
   echo "${GITHUB_OWNER}"
+  echo "$github_api_url"/pulls
 
   pr_url=$(curl \
     -X POST \
-    -- url "$github_api_url"/pulls \
+    --url "$github_api_url"/pulls \
     --header "Accept: application/vnd.github+json" \
     --header "Authorization: token ${GITHUB_TOKEN}" \
     -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
