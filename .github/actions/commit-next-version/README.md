@@ -1,6 +1,8 @@
 # Commit next version action
 
 This is a GitHub action to replace a current version with the next and commit changes.
+During the invocation a new PR is created and merged into the current with `--admin` flag to ignore protected branch 
+restrictions.
 
 ## Inputs
 
@@ -28,5 +30,8 @@ This is a GitHub action to replace a current version with the next and commit ch
       current-version-file: ${{github.event.inputs.current-version-file}}
     env:
       BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_OWNER: ${{ github.owner }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
 ```
 

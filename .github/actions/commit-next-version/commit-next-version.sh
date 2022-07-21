@@ -31,7 +31,7 @@ main() {
   git add "$current_version_file"
   git commit -m "$tag"
 
-  # push new version
+  # create new release and merge into target branch
   git push -u origin "$release_branch"
   gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag"
   gh pr merge --admin --body "$tag" --merge
