@@ -12,12 +12,12 @@ set -euo pipefail
 main() {
 
   # script variables
-  current_version="$1";
-  next_version="$2";
+  current_version="$1"
+  next_version="$2"
   current_version_file="$3"
-  timestamp=$(date +'%Y-%m-%d-%H-%M-%S')
-  tag="v"$next_version;
-  release_branch="v""$next_version""-""$timestamp";
+  timestamp=$(date+'%Y-%m-%d-%H-%M-%S')
+  tag="v"$next_version
+  release_branch="v""$next_version""-""$timestamp"
 
   # check out the branch and set user configs
   git checkout "$BRANCH_NAME"
@@ -32,9 +32,24 @@ main() {
 
   # push new version
   git push -u origin "$release_branch"
-  pr_url=$(gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch")
-  gh pr review "$pr_url" --approve
+  pr_url=$(curl \
+    -X POST \
+    -- url https://api.github.com/repos/"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"/pulls \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: token ${GITHUB_TOKEN}" \
+    -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
+  curl --X POST \
+    --url "$pr_url"/reviews \
+    -H "authorization: Bearer ${GITHUB_TOKEN}" \
+    -H "Accept: application/vnd.github+json" \
+    -d '{"event":"APPROVE"}'
   gh pr merge "$pr_url" --admin --delete-branch
+  curl \
+    -X PUT \
+    --url "$pr_url"/merge \
+    -H "authorization: Bearer ${GITHUB_TOKEN}" \
+    -H "Accept: application/vnd.github+json" \
+    -d '{"merge_method":"rebase"}'
 
   # push tag
   git tag -a "$tag" -m "$tag"

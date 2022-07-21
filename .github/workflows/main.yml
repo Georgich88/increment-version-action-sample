@@ -57,24 +57,6 @@ jobs:
         env:
           BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
 
-      # Deployment
-
-      - name: "Step 5/8: Invoke Deploy DEV"
-        id: deploy_to_dev
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: deploy
-          token: ${{ secrets.BOT_TOKEN_REPO_ALL }}
-          inputs: '{ "branch": "main", "test": "false", "target": "dev-api" }'
-
-      - name: "Step 6/8: Invoke Deploy STAGING"
-        id: deploy_to_staging
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: deploy
-          token: ${{ secrets.BOT_TOKEN_REPO_ALL }}
-          inputs: '{ "branch": "main", "test": "false", "target": "staging" }'
-
         # Notification
 
       - name: Print release description
