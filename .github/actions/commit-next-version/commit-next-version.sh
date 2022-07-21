@@ -32,6 +32,8 @@ main() {
 
   # push new version
   git push -u origin "$release_branch"
+  echo "https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/pulls"
+
   pr_url=$(curl \
     -X POST \
     -- url "https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/pulls" \
