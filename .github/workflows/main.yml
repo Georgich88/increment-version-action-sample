@@ -21,6 +21,7 @@ jobs:
   prepare_release:
     name: Prepare release
     runs-on: ubuntu-latest
+    permissions: write-all
 
     steps:
 
