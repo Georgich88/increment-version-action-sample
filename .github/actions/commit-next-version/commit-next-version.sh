@@ -48,14 +48,15 @@ main() {
 #    -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
 #  echo "PR URL:$pr_url"
 
-  gh pr review --approve
+  gh pr review "$pr_url" --approve
+
 #  curl --X POST \
 #    --url "$pr_url/reviews" \
 #    --header "authorization: Bearer ${GITHUB_TOKEN}" \
 #    --header "Accept: application/vnd.github+json" \
 #    -d '{"event":"APPROVE"}'
 
-  gh pr merge --admin --rebase --delete-branch
+  gh pr merge "$pr_url" --admin --rebase --delete-branch
 #  curl \
 #    -X PUT \
 #    --url "$pr_url"/merge \
