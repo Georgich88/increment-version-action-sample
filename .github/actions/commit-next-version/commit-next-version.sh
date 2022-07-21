@@ -33,27 +33,8 @@ main() {
 
   # push new version
   git push -u origin "$release_branch"
-
-  which gh
-
-  pr_url=$(gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag")
-
-  echo "$pr_url"
-  gh --version
-
-  curl --request POST \
-    --url "$pr_url"/reviews \
-    --header "authorization: Bearer $GITHUB_TOKEN" \
-    --header "content-type: application/json" \
-    -d "{\"event\":\"APPROVE\"}" | cat
-
-  curl --request PUT \
-    --url "$pr_url"/merge \
-    --header "authorization: Bearer $GITHUB_TOKEN" \
-    --header "content-type: application/json" | cat
-
-
-  # gh pr merge --admin --body "$tag" --merge
+  gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag"
+  gh pr merge --admin --body "$tag" --merge
 
   # push tag
   git tag -a "$tag" -m "$tag"
