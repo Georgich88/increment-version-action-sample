@@ -35,8 +35,7 @@ main() {
   git push -u origin "$release_branch"
 
   which gh
-  echo "${GITHUB_TOKEN}" | tee ./github_token
-  gh auth login --with-token < ./github_token
+  gh auth login
   gh status
 
   gh pr create --base "$BRANCH_NAME" --head "$release_branch"
