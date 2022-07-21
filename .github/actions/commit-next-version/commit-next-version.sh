@@ -15,22 +15,30 @@ main() {
   current_version="$1";
   next_version="$2";
   current_version_file="$3"
+  timestamp=$(date +'%Y-%m-%d-%H-%M-%S')
   tag="v"$next_version;
+  release_branch="v""$next_version""-""$timestamp";
 
   # check out the branch and set user configs
-  git checkout $BRANCH_NAME
+  git checkout "$BRANCH_NAME"
+  git checkout -b "$release_branch"
   git config user.name "${GITHUB_ACTOR}"
   git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
   # set next version
-  sed -i -e "s/"$current_version"/"$next_version"/g" $current_version_file
-  git add $current_version_file
-  git commit -m $tag
+  sed -i -e "s/""$current_version""/""$next_version""/g" "$current_version_file"
+  git add "$current_version_file"
+  git commit -m "$tag"
 
-  # push new version and tag
-  git push origin $BRANCH_NAME
-  git tag -a $tag -m $tag
-  git push origin tag $tag
+  # push new version
+  git push -u origin "$release_branch"
+  pr_url=$(gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch")
+  gh pr review "$pr_url" --approve
+  gh pr merge "$pr_url" --admin --delete-branch
+
+  # push tag
+  git tag -a "$tag" -m "$tag"
+  git push origin tag "$tag"
 
 }
 

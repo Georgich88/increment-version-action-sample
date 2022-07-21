@@ -39,13 +39,3 @@ The incremented version.
 | major            | 2.11.7          |   | 3.0.0         |
 | minor            | 2.11.7          |   | 2.12.0        |
 | fix              | 2.11.7          |   | 2.11.8        |
-
-
-## Example usage
-```yaml
-  - name: Getting current version
-    id: read_current_version
-    uses: ./.github/actions/read-current-version/
-    with:
-      current-version-file: ${{github.event.inputs.current-version-file}}
-```

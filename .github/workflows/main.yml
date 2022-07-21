@@ -18,33 +18,36 @@ on:
 
 jobs:
 
-  test-increment-version:
-    name: Test version increment for ${{github.event.inputs.current-version-file}}
+  prepare_release:
+    name: Prepare release
     runs-on: ubuntu-latest
 
     steps:
+
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # fetch all history for all tags and branches
 
-      - name: Read the branch name
+      # New release version
+
+      - name: "Step 1/8: Read Branch Name"
         id: read_current_branch_name
         run: echo ::set-output name=branch-name::${GITHUB_REF#refs/*/}
 
-      - name: Getting current version
+      - name: "Step 2/8: Read Current Version"
         id: read_current_version
         uses: ./.github/actions/read-current-version/
         with:
           current-version-file: ${{github.event.inputs.current-version-file}}
 
-      - name: Increment version ${{ steps.read_current_version.outputs.current-version }}
+      - name: "Step 3/8: Increment Version ${{ steps.read_current_version.outputs.current-version }}"
         id: increment_version
         uses: ./.github/actions/increment-version
         with:
           current-version: ${{ steps.read_current_version.outputs.current-version }}
-          version-fragment: ${{ github.event.inputs.version-fragment }} 
+          version-fragment: ${{ github.event.inputs.version-fragment }}
 
-      - name: Commit next version ${{ steps.increment_version.outputs.next-version }}
+      - name: "Step 4/8: Commit Next Version ${{ steps.increment_version.outputs.next-version }}"
         id: commit_next_version
         uses: ./.github/actions/commit-next-version
         with:
@@ -54,15 +57,25 @@ jobs:
         env:
           BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
 
-      - name: Shortcut notification for next version ${{ steps.increment_version.outputs.next-version }}
-        id: prepare_release_description
-        uses: ./.github/actions/shortcut-notify-next-version/
+      # Deployment
+
+      - name: "Step 5/8: Invoke Deploy DEV"
+        id: deploy_to_dev
+        uses: benc-uk/workflow-dispatch@v1
         with:
-          branch-name: ${{ steps.read_current_branch_name.outputs.branch-name }}
-          current-version: ${{ steps.read_current_version.outputs.current-version }}
-          next-version: ${{ steps.increment_version.outputs.next-version }}
-          shortcut-token: ${{ secrets.CLUBHOUSE_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: deploy
+          token: ${{ secrets.BOT_TOKEN_REPO_ALL }}
+          inputs: '{ "branch": "main", "test": "false", "target": "dev-api" }'
+
+      - name: "Step 6/8: Invoke Deploy STAGING"
+        id: deploy_to_staging
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: deploy
+          token: ${{ secrets.BOT_TOKEN_REPO_ALL }}
+          inputs: '{ "branch": "main", "test": "false", "target": "staging" }'
+
+        # Notification
 
       - name: Print release description
         id: print_release_description
