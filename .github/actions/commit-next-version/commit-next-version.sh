@@ -37,7 +37,7 @@ main() {
   which gh
 
   gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag"
-  gh pr merge --admin --body "$tag"
+  gh pr merge --admin --body "$tag" --disable-auto --merge
 
   # push tag
   git tag -a "$tag" -m "$tag"
