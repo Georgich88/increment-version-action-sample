@@ -56,6 +56,9 @@ jobs:
           current-version-file: ${{github.event.inputs.current-version-file}}
         env:
           BRANCH_NAME: ${{ steps.read_current_branch_name.outputs.branch-name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.owner }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
         # Notification
 

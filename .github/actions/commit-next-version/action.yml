@@ -20,7 +20,3 @@ runs:
     - ${{ inputs.current-version }}
     - ${{ inputs.next-version }}
     - ${{ inputs.current-version-file }}
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    GITHUB_OWNER: ${{ github.owner }}
-    GITHUB_REPOSITORY: ${{ github.repository }}
