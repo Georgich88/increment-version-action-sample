@@ -35,9 +35,8 @@ main() {
   git push -u origin "$release_branch"
 
   which gh
-  gh pr status
 
-  gh pr create --base "$BRANCH_NAME" --head "$release_branch"
+  gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag"
   gh pr review --approve
   gh pr merge --admin --rebase --delete-branch
 
