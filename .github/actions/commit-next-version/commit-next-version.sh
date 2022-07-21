@@ -36,7 +36,8 @@ main() {
 
   which gh
 
-  gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag"
+  pr_url=$(gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag")
+  echo "$pr_url"
   gh pr merge --admin --body "$tag" --merge
 
   # push tag
