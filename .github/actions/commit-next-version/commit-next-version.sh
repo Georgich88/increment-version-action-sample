@@ -35,7 +35,7 @@ main() {
   git push -u origin "$release_branch"
 
   which gh
-  gh auth login
+  gh auth refresh
   gh status
 
   gh pr create --base "$BRANCH_NAME" --head "$release_branch"
