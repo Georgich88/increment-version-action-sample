@@ -30,8 +30,6 @@ main() {
   git add "$current_version_file"
   git commit -m "$tag"
 
-  ls /usr/bin/gh -al
-
   # push new version
   git push -u origin "$release_branch"
   gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch"
