@@ -20,7 +20,6 @@ main() {
   release_branch="v""$next_version""-""$timestamp"
 
   # check out the branch and set user configs
-  git config --global --add safe.directory .
   git checkout "$BRANCH_NAME"
   git checkout -b "$release_branch"
   git config user.name "${GITHUB_ACTOR}"
