@@ -18,6 +18,7 @@ main() {
   timestamp=$(date +'%Y-%m-%d-%H-%M-%S')
   tag="v"$next_version
   release_branch="v""$next_version""-""$timestamp"
+  github_api_url=https://api.github.com/repos/"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"
 
   # check out the branch and set user configs
   git checkout "$BRANCH_NAME"
@@ -32,11 +33,11 @@ main() {
 
   # push new version
   git push -u origin "$release_branch"
-  echo "https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/pulls"
+  echo "$github_api_url"
 
   pr_url=$(curl \
     -X POST \
-    -- url "https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPOSITORY}/pulls" \
+    -- url "$github_api_url"/pulls \
     --header "Accept: application/vnd.github+json" \
     --header "Authorization: token ${GITHUB_TOKEN}" \
     -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
