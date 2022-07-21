@@ -34,6 +34,7 @@ main() {
   # push new version
   git push -u origin "$release_branch"
   echo "$github_api_url"
+  echo "${GITHUB_OWNER}"
 
   pr_url=$(curl \
     -X POST \
