@@ -33,9 +33,9 @@ main() {
   # push new version
   git push -u origin "$release_branch"
   ls -al
-  pr_url=$(gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch")
-  gh pr review "$pr_url" --approve
-  gh pr merge "$pr_url" --admin --rebase --delete-branch
+  gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch"
+  gh pr review --approve
+  gh pr merge --admin --rebase --delete-branch
 
   # push tag
   git tag -a "$tag" -m "$tag"
