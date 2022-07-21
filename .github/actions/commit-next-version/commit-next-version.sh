@@ -37,6 +37,7 @@ main() {
   which gh
 
   gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag"
+  gh pr review --approve
   gh pr merge --admin --rebase --delete-branch
 
   # push tag
