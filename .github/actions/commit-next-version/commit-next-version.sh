@@ -30,11 +30,13 @@ main() {
   git add "$current_version_file"
   git commit -m "$tag"
 
+  ls /usr/bin/gh -al
+
   # push new version
   git push -u origin "$release_branch"
-  github-cli pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch"
-  github-cli pr review --approve
-  github-cli pr merge --admin --rebase --delete-branch
+  gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch"
+  gh pr review --approve
+  gh pr merge --admin --rebase --delete-branch
 
   # push tag
   git tag -a "$tag" -m "$tag"
