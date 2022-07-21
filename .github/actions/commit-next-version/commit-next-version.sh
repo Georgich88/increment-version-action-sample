@@ -38,12 +38,13 @@ main() {
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: token ${GITHUB_TOKEN}" \
     -d "{\"title\":\"$tag\",\"head\":\"$release_branch\",\"base\":\"$BRANCH_NAME\"}")
+
   curl --X POST \
     --url "$pr_url"/reviews \
     -H "authorization: Bearer ${GITHUB_TOKEN}" \
     -H "Accept: application/vnd.github+json" \
     -d '{"event":"APPROVE"}'
-  gh pr merge "$pr_url" --admin --delete-branch
+
   curl \
     -X PUT \
     --url "$pr_url"/merge \
