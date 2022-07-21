@@ -33,7 +33,7 @@ main() {
   # push new version
   git push -u origin "$release_branch"
   ls -al
-  ls /usr/bin/ -al
+  ls /ghcli -al
   gh pr create --title "$tag" --base "$BRANCH_NAME" --head "$release_branch"
   gh pr review --approve
   gh pr merge --admin --rebase --delete-branch
