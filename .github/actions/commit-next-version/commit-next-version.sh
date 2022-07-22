@@ -40,7 +40,7 @@ main() {
     --url "$pr_url"/reviews \
     --header "authorization: Bearer $BOT_TOKEN_REPO_ALL" \
     --header "content-type: application/json" \
-    -d "{\"event\":\"APPROVE\"}"
+    -d "{\"event\":\"APPROVE\"}" | cat
 
   # merge into target branch
   gh pr merge --admin --body "$tag" --rebase --delete-branch
