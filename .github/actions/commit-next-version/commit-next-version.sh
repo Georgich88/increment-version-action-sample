@@ -34,6 +34,7 @@ main() {
   # create new release and merge into target branch
   git push -u origin "$release_branch"
   pr_url=$(gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "Create release branch")
+  echo "$pr_url"
 
   # approve release with the github bot actor
   approve_result=$(curl --request POST \
