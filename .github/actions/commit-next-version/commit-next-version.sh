@@ -37,10 +37,10 @@ main() {
   echo "$pr_url"
 
   # approve release with the github bot actor
-  approve_result=$(curl --request POST \
-    --url "$pr_url"/reviews \
-    --header "authorization: Bearer $BOT_TOKEN_REPO_ALL" \
-    --header "content-type: application/json" \
+  approve_result=$(curl -X POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "Authorization: token $BOT_TOKEN_REPO_ALL" \
+    "$pr_url"/reviews \
     -d "{\"event\":\"APPROVE\"}")
   echo "$approve_result"
 
