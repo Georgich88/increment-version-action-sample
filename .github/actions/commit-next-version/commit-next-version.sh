@@ -37,13 +37,13 @@ main() {
   echo "$pr_url"
   pr_number=${pr_url#*pull/}
   echo "$pr_number"
-  echo https://api.github.com/repos/"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"/pulls/"$pr_number"/reviews
+  echo https://api.github.com/repos"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"/pulls/"$pr_number"/reviews
 
   # approve release with the github bot actor
   approve_result=$(curl -X POST \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: token $BOT_TOKEN_REPO_ALL" \
-    https://api.github.com/repos/"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"/pulls/"$pr_number"/reviews \
+    https://api.github.com/repos"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"/pulls/"$pr_number"/reviews \
     -d "{\"event\":\"APPROVE\"}")
   echo "$approve_result"
 
