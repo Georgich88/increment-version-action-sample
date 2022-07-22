@@ -37,6 +37,9 @@ main() {
   pr_number=${pr_url#*pull/}
 
   # approve release with the github bot actor
+  # TODO: should be rewritten after GitHub add option for GitHub actions to bypass branch protection rules
+  # See: https://github.com/github-community/community/discussions/13836
+  # See: https://github.community/t/allowing-github-actions-bot-to-push-to-protected-branch/16536/2
   approve_result=$(curl -X POST \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: token $BOT_TOKEN_REPO_ALL" \
