@@ -38,6 +38,7 @@ main() {
   pr_number=${pr_url#*pull/}
   echo "$pr_number"
   echo https://api.github.com/repos"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"/pulls/"$pr_number"/reviews
+  echo "${GITHUB_OWNER}"
 
   # approve release with the github bot actor
   approve_result=$(curl -X POST \
