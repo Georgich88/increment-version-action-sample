@@ -33,8 +33,17 @@ main() {
 
   # create new release and merge into target branch
   git push -u origin "$release_branch"
-  gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "$tag"
-  gh pr merge --admin --body "$tag" --merge
+  pr_url=$(gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "Create release branch")
+
+  # approve release with the github bot actor
+  curl --request POST \
+    --url "$pr_url"/reviews \
+    --header "authorization: Bearer $BOT_TOKEN_REPO_ALL" \
+    --header "content-type: application/json" \
+    -d "{\"event\":\"APPROVE\"}"
+
+  # merge into target branch
+  gh pr merge --admin --body "$tag" --rebase --delete-branch
 
   # push tag
   git tag -a "$tag" -m "$tag"
