@@ -36,11 +36,12 @@ main() {
   pr_url=$(gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "Create release branch")
 
   # approve release with the github bot actor
-  curl --request POST \
+  approve_result=$(curl --request POST \
     --url "$pr_url"/reviews \
     --header "authorization: Bearer $BOT_TOKEN_REPO_ALL" \
     --header "content-type: application/json" \
-    -d "{\"event\":\"APPROVE\"}" | cat
+    -d "{\"event\":\"APPROVE\"}")
+  echo "$approve_result"
 
   # merge into target branch
   gh pr merge --admin --body "$tag" --rebase --delete-branch
