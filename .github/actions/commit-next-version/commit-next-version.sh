@@ -35,12 +35,14 @@ main() {
   git push -u origin "$release_branch"
   pr_url=$(gh pr create --base "$BRANCH_NAME" --head "$release_branch" --title "$tag" --body "Create release branch")
   echo "$pr_url"
+  pr_number=${pr_url#*pull/}
+  echo "$pr_number"
 
   # approve release with the github bot actor
   approve_result=$(curl -X POST \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: token $BOT_TOKEN_REPO_ALL" \
-    "$pr_url"/reviews \
+    https://api.github.com/repos/"${GITHUB_OWNER}"/"${GITHUB_REPOSITORY}"/pulls/"$pr_number"/reviews \
     -d "{\"event\":\"APPROVE\"}")
   echo "$approve_result"
 
