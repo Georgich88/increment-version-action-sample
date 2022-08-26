@@ -22,13 +22,27 @@ Change shortcut labels and create the deployment description
 
 ## `github-token`
 
-**Required** The github token.
+**Required** The GitHub token.
 
 ## Outputs
 
 ## `deployment-description`
 
 The deployment description.
+
+See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
+
+## Package for distribution
+
+GitHub Actions will run the entry point from the action.yml. Packaging assembles the code into one file that can be checked in to Git, enabling fast and reliable execution and preventing the need to check in node_modules.
+
+Actions are run from GitHub repos.  Packaging the action will create a packaged action in the dist folder.
+
+Run prepare
+
+```bash
+npm run prepare
+```
 
 ## Example usage
 ```yaml

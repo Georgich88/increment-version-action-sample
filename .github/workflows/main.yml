@@ -5,7 +5,7 @@ on:
     inputs:
       current-version-file:
         description: 'The current version file to increment'
-        default: 'demo/chem101-server.platform-conventions.gradle'
+        default: 'buildSrc/src/main/groovy/chem101-server.platform-conventions.gradle'
         required: true
       version-fragment:
         type: choice
@@ -21,7 +21,6 @@ jobs:
   prepare_release:
     name: Prepare release
     runs-on: ubuntu-latest
-    permissions: write-all
 
     steps:
 
@@ -64,6 +63,24 @@ jobs:
 
         # Notification
 
-      - name: Print release description
-        id: print_release_description
-        run: echo ${{ steps.prepare_release_description.outputs.deployment-description }}
+      - name: "Step 7/8: Notify Shortcut ${{ steps.increment_version.outputs.next-version }}"
+        id: prepare_release_description
+        uses: ./.github/actions/shortcut-notify-next-version/
+        with:
+          branch-name: ${{ steps.read_current_branch_name.outputs.branch-name }}
+          current-version: ${{ steps.read_current_version.outputs.current-version }}
+          next-version: ${{ steps.increment_version.outputs.next-version }}
+          shortcut-token: ${{ secrets.CLUBHOUSE_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Step 8/8: Notify Slack ${{ steps.increment_version.outputs.next-version }}"
+        id: send_release_description
+        uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          config: .github/config/slack-notify-next-version/slack.yml
+          channel: '#engineering-deploys'
+          message: ${{ steps.prepare_release_description.outputs.deployment-description }}
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ENGINEERING_DEPLOYS_WEBHOOK_URL }}

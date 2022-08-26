@@ -2,6 +2,9 @@ const {exec} = require('child_process');
 const axios = require('axios')
 const github = require('@actions/github')
 const core = require('@actions/core')
+const shortcut_parsing = require("./shortcut_parsing");
+const shortcut_description = require("./shortcut_description");
+
 
 async function notifyShortcut() {
 
@@ -56,7 +59,7 @@ async function notifyShortcut() {
       }
 
       // notification message
-      let deploymentDescription = `Aktiv-Server is preparing a release for ${currentVersionTag}. This has been deployed to dev and staging. All associated tickets have been labelled ${currentVersionTag} as well. The tickets to be released are:`
+      let deploymentDescription = `Aktiv-Server is preparing a release for ${nextVersionTag}.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging. All associated tickets have been labelled ${nextVersionTag} as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
 
       // find all merged pull requests from the latest version
       const commitHashes = revListOutput.split(/\r?\n/);
@@ -80,6 +83,8 @@ async function notifyShortcut() {
       }
       core.info(`Found ${uniqueOrderedPrs.length} PRs from the ${currentVersionTag}`)
 
+      const label = createLabel(nextVersionTag, SHORTCUT_TOKEN);
+
       // prepare description and update tags for stories associated with PRs
       for (const prDetails of uniqueOrderedPrs) {
         // pull request details
@@ -90,23 +95,23 @@ async function notifyShortcut() {
 
         // retrieve stories from the pull request
         const prComments = await findPrCommentsByPrNumber(prNumber, GITHUB_TOKEN);
-        const storyIds = await extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
+        const storyIds = await shortcut_parsing.extractStoryIdsFromPrDescriptionAndPrComments(prDescription, prComments);
         const uniqueStoryIds = storyIds.filter((value, index, self) => self.indexOf(value) === index);
 
         // update story tags
         let storyFound = false;
+
         for (const storyId of uniqueStoryIds) {
-          const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
+          const story = await updateStoryWithVersionTagLabel(storyId, label, SHORTCUT_TOKEN);
           if (story) {
             storyFound = true;
-            const storyCommentForDeployment = `\n - [${prTitle}](${prLink}) - [${story.name}](${story.app_url})`;
-            deploymentDescription = deploymentDescription.concat(storyCommentForDeployment)
+            deploymentDescription = shortcut_description.addStoryDescriptionToDeploymentDescription(deploymentDescription, prTitle, prLink, story);
           }
         }
 
         // if there is no story, just add pr info to final description
         if (!storyFound) {
-          deploymentDescription = deploymentDescription.concat(`\n - [${prTitle}](${prLink})`)
+          deploymentDescription = shortcut_description.addPrDescriptionToDeploymentDescription(deploymentDescription, prTitle, prLink);
         }
 
       }
@@ -164,47 +169,42 @@ async function findPrCommentsByPrNumber(prNumber, token) {
 }
 
 /**
- * Gets Shortcut story ids from the PR's description and comments
- * @param description the PR's description
- * @param comments array of the PR's comments
- * @returns {String[]}
+ * Creates a label for the new release version
+ * @param {string} tagVersion the tag version for a label
+ * @param SHORTCUT_TOKEN {string} the token to access the Shortcut API
+ * @returns {Promise<Object>} the new release tag
  */
-async function extractStoryIdsFromPrDescriptionAndPrComments(description, comments) {
-
-  const storyIDsFromDescription = extractStoryIdsFromText(description);
-  const storyIDsFromComments = comments.flatMap(comment => extractStoryIdsFromText(comment)).filter(Boolean);
-
-  if (storyIDsFromDescription === null) {
-    return storyIDsFromComments;
+async function createLabel(tagVersion, SHORTCUT_TOKEN) {
+  const labelsUrl = `https://api.app.shortcut.com/api/v3/labels`;
+  const labelResponse = await axios.post(`${labelsUrl}?token=${SHORTCUT_TOKEN}`,
+    {name: tagVersion, color: '#fdeba5'});
+  if (labelResponse.status === 201) {
+    const label = labelResponse.data;
+    console.log('\x1b[33m%s\x1b[0m', 'New label created with label.id=' + label.id);
+    return label;
+  } else {
+    throw new Error("Cannot create new label");
   }
-
-  return [...storyIDsFromDescription, ...storyIDsFromComments];
 
 }
 
 /**
- * Matches all the numbers in the text
- * that are like this shortcut.com/101education/story/123123/something
- * @param text
- * @returns {String}
+ * Adds a label with version to the story and return updated story
+ * @param storyId {string} the story id
+ * @param label {Object} the label for a new tab
+ * @param SHORTCUT_TOKEN {string} the token to access the Shortcut API
+ * @returns {Promise<Object|boolean>} the updated story
  */
-function extractStoryIdsFromText(text) {
-  return text.match(/(?<=shortcut.com\/101education\/story\/)(\d*)(?=\/)/g)
-}
-
-// Add a label with version to the story and return updated story
-async function updateStoryWithVersionTagLabel(storyId, tagVersion, SHORTCUT_TOKEN) {
+async function updateStoryWithVersionTagLabel(storyId, label, SHORTCUT_TOKEN) {
   const storiesUrl = `https://api.app.shortcut.com/api/v3/stories`;
   try {
     const story = await axios.get(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`);
-    const tagLabels = [{name: tagVersion, color: '#fdeba5'}];
-    return await axios.put(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`,
-      {
-        labels: [...story, ...tagLabels]
-      });
+    const label_ids = story.label_ids ? story.label_ids : [];
+    story.label_ids = [...label_ids, label.id]; // add tag-label to story's label ids
+    return await axios.put(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`, story);
   } catch (error) {
-    console.log('\x1b[33m%s\x1b[0m', 'Could not update story label' + storyId + ' because : ');
-    console.log('\x1b[31m%s\x1b[0m', error);
+    console.error('\x1b[33m%s\x1b[0m',
+      'Could not update story label storyId=' + storyId + ' because: ' + error);
     return false; // return false if cannot to update story
   }
 }

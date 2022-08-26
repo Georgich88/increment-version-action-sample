@@ -1,0 +1,17 @@
+# This file is not getting used yet when they might be used once github starts supporting Fully Functioning Composite Actions
+# we require this so that we can create a common composite action for running unit tests adn make the workflow modular
+# References to keep track of when this will be supported by github:
+# https://github.com/actions/runner/issues/646
+# https://github.com/actions/runner/pull/1040
+
+name: 'Run Tests'
+inputs:
+  module:
+    description: 'Module to run tests for'
+    required: true
+    default: util
+runs:
+  using: "composite"
+  steps:
+    - run: ./gradlew :util:test --continue
+      shell: bash
