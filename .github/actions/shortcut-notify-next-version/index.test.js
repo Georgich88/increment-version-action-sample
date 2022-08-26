@@ -2,7 +2,7 @@ const shortcut_parsing = require("./shortcut_parsing");
 const shortcut_description = require("./shortcut_description");
 
 test('Should extract shortcut ticket number from a PR comment', async () => {
-  const prComment = 'https://app.shortcut.com/101education/story/19671/create-a-github-action-to-prepare-release';
+  const prComment = 'https://app.shortcut.com/georgy-aktiv-test/story/19671/create-a-github-action-to-prepare-release';
   const extractedNumber = shortcut_parsing.extractStoryIdsFromText(prComment);
   expect(extractedNumber).toEqual(['19671'])
 });

@@ -24,7 +24,7 @@ const extractStoryIdsFromPrDescriptionAndPrComments = async function (descriptio
  * @returns {String}
  */
 const extractStoryIdsFromText = function(text) {
-  return text.match(/(?<=shortcut.com\/101education\/story\/)(\d*)(?=\/)/g)
+  return text.match(/(?<=shortcut.com\/georgy-aktiv-test\/story\/)(\d*)(?=\/)/g)
 }
 
 module.exports = {
