@@ -199,9 +199,10 @@ async function updateStoryWithVersionTagLabel(storyId, label, SHORTCUT_TOKEN) {
   const storiesUrl = `https://api.app.shortcut.com/api/v3/stories`;
   try {
     const story = await axios.get(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`);
+    console.info('\x1b[33m%s\x1b[0m', 'story to update:' + JSON.stringify(story));
     const labels = story.labels ? story.labels : [];
-    console.info('\x1b[33m%s\x1b[0m', 'labels to update:' + JSON.stringify(labels));
     story.labels = [...labels, {name: label.name, color: label.color}]; // add tag-label to story's label ids
+    console.info('\x1b[33m%s\x1b[0m', 'labels to update:' + JSON.stringify(labels));
     const result = await axios.put(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`, {labels: story.labels});
     console.info('\x1b[33m%s\x1b[0m', 'Updated story with label storyId=' + storyId + ': ' + JSON.stringify(result));
   } catch (error) {
