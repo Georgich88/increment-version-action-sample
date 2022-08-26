@@ -15957,7 +15957,7 @@ async function notifyShortcut() {
       }
       core.info(`Found ${uniqueOrderedPrs.length} PRs from the ${currentVersionTag}`)
 
-      const label = createLabel(nextVersionTag, SHORTCUT_TOKEN);
+      await createLabel(nextVersionTag, SHORTCUT_TOKEN);
 
       // prepare description and update tags for stories associated with PRs
       for (const prDetails of uniqueOrderedPrs) {
@@ -15976,7 +15976,7 @@ async function notifyShortcut() {
         let storyFound = false;
 
         for (const storyId of uniqueStoryIds) {
-          const story = await updateStoryWithVersionTagLabel(storyId, label, SHORTCUT_TOKEN);
+          const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
           if (story) {
             storyFound = true;
             deploymentDescription = shortcut_description.addStoryDescriptionToDeploymentDescription(deploymentDescription, prTitle, prLink, story);
@@ -16042,6 +16042,8 @@ async function findPrCommentsByPrNumber(prNumber, token) {
   }
 }
 
+const LABEL_COLOR = '#fdeba5';
+
 /**
  * Creates a label for the new release version
  * @param {string} tagVersion the tag version for a label
@@ -16051,11 +16053,11 @@ async function findPrCommentsByPrNumber(prNumber, token) {
 async function createLabel(tagVersion, SHORTCUT_TOKEN) {
   const labelsUrl = `https://api.app.shortcut.com/api/v3/labels`;
   const labelResponse = await axios.post(`${labelsUrl}?token=${SHORTCUT_TOKEN}`,
-    {name: tagVersion, color: '#fdeba5'});
+    {name: tagVersion, color: LABEL_COLOR});
   if (labelResponse.status === 201) {
     const label = labelResponse.data;
     console.log('\x1b[33m%s\x1b[0m', 'New label created with label.id=' + label.id);
-    return {name: tagVersion, color: '#fdeba5'};
+    return label;
   } else {
     throw new Error("Cannot create new label");
   }
@@ -16065,18 +16067,17 @@ async function createLabel(tagVersion, SHORTCUT_TOKEN) {
 /**
  * Adds a label with version to the story and return updated story
  * @param storyId {string} the story id
- * @param label {Object} the label for a new tab
+ * @param tagVersion {string} the version tag
  * @param SHORTCUT_TOKEN {string} the token to access the Shortcut API
  * @returns {Promise<Object|boolean>} the updated story
  */
-async function updateStoryWithVersionTagLabel(storyId, label, SHORTCUT_TOKEN) {
+async function updateStoryWithVersionTagLabel(storyId, tagVersion, SHORTCUT_TOKEN) {
   const storiesUrl = `https://api.app.shortcut.com/api/v3/stories`;
   try {
     const story = (await axios.get(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`)).data;
-    const labels = story.labels ? [...story.labels, label] : [];
+    const labels = story.labels ? [...story.labels, {name: tagVersion, color: LABEL_COLOR}] : [];
     // convert labels to array of CreateLabelParams objects
     // See https://shortcut.com/api/rest/v3#CreateLabelParams
-    console.info('\x1b[33m%s\x1b[0m', 'label= ' + JSON.stringify(label));
     const createLabelParams = labels.map(l => ({color: l.color, name: l.name})); // add tag-label to story's label ids
     console.info('\x1b[33m%s\x1b[0m', 'createLabelParams= ' + JSON.stringify(createLabelParams));
     const result = await axios.put(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`, {labels: createLabelParams});
