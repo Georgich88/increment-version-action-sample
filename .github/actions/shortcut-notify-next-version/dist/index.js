@@ -16077,6 +16077,7 @@ async function updateStoryWithVersionTagLabel(storyId, label, SHORTCUT_TOKEN) {
     // convert labels to array of CreateLabelParams objects
     // See https://shortcut.com/api/rest/v3#CreateLabelParams
     const createLabelParams = labels.map(l => ({color: l.color, name: l.name})); // add tag-label to story's label ids
+    console.info('\x1b[33m%s\x1b[0m', 'createLabelParams= ' + JSON.stringify(createLabelParams));
     const result = await axios.put(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`, {labels: createLabelParams});
     console.info('\x1b[33m%s\x1b[0m', 'Updated story with label storyId=' + storyId + ': ' + JSON.stringify(result.data));
   } catch (error) {
