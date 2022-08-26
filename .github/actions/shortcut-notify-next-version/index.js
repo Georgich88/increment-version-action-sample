@@ -208,6 +208,7 @@ async function updateStoryWithVersionTagLabel(storyId, tagVersion, SHORTCUT_TOKE
     console.info('\x1b[33m%s\x1b[0m', 'createLabelParams= ' + JSON.stringify(createLabelParams));
     const result = await axios.put(`${storiesUrl}/${storyId}?token=${SHORTCUT_TOKEN}`, {labels: createLabelParams});
     console.info('\x1b[33m%s\x1b[0m', 'Updated story with label storyId=' + storyId + ': ' + JSON.stringify(result.data));
+    return result.data;
   } catch (error) {
     console.error('\x1b[33m%s\x1b[0m',
       'Could not update story label storyId=' + storyId + ' because: ' + error);
