@@ -181,7 +181,7 @@ async function createLabel(tagVersion, SHORTCUT_TOKEN) {
   if (labelResponse.status === 201) {
     const label = labelResponse.data;
     console.log('\x1b[33m%s\x1b[0m', 'New label created with label.id=' + label.id);
-    return label;
+    return {name: tagVersion, color: '#fdeba5'};
   } else {
     throw new Error("Cannot create new label");
   }
