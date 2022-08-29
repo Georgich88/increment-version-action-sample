@@ -61,8 +61,8 @@ async function notifyShortcut() {
       }
 
       // notification message
-      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${br}This has been deployed to \`dev\` and \`staging\`. All associated tickets have been labelled \`${nextVersionTag}\` as well.${br}The tickets to be released are:`
-      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${br}This has been deployed to \`dev\` and \`staging\`.`
+      let deploymentTitle = `Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${br}This has been deployed to \`dev\` and \`staging\`. All associated tickets have been labelled \`${nextVersionTag}\` as well.${br}The tickets to be released are:`
+      let deploymentTitleEmpty = `Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${br}This has been deployed to \`dev\` and \`staging\`.`
       let deploymentDescription = '';
 
       // find all merged pull requests from the latest version
