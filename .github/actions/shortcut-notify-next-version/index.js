@@ -12,6 +12,8 @@ async function notifyShortcut() {
   // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
   exec('git show-ref --tags', (err, showRefOutput, stderr) => {
 
+    const br = shortcut_description.ESCAPE_NEW_LINE;
+
     if (err) {
       console.log('\x1b[33m%s\x1b[0m', 'Could not find any tags because: ');
       console.log('\x1b[31m%s\x1b[0m', showRefOutput);
@@ -59,8 +61,8 @@ async function notifyShortcut() {
       }
 
       // notification message
-      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to \`dev\` and \`staging\`. All associated tickets have been labelled \`${nextVersionTag}\` as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
-      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to \`dev\` and \`staging\`.`
+      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${br}This has been deployed to \`dev\` and \`staging\`. All associated tickets have been labelled \`${nextVersionTag}\` as well.${br}The tickets to be released are:`
+      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${br}This has been deployed to \`dev\` and \`staging\`.`
       let deploymentDescription = '';
 
       // find all merged pull requests from the latest version
@@ -130,7 +132,7 @@ async function notifyShortcut() {
 
       // form the final description
       if (deploymentDescription !== '') {
-        deploymentDescription = deploymentTitle.concat('<ul>', deploymentDescription, '</ul>');
+        deploymentDescription = deploymentTitle.concat(`${br}<ul>${br}`, deploymentDescription, `${br}</ul>`);
       } else {
         deploymentDescription = deploymentTitleEmpty;
       }

@@ -15603,13 +15603,12 @@ const ESCAPE_NEW_LINE = '%0A'; // to escape '\n'
  * @param deploymentDescription {string} the initial description
  * @param prTitle {string} the GitHub PR title
  * @param prLink {string} the GitHub PR link
- * @param story {Object} the shortcut ticket object
- * @param story.name {string} the shortcut ticket name
- * @param story.app_url {string} the shortcut ticket ULR
+ * @param storyTitle {string} the shortcut ticket title
+ * @param storyLink {string} the shortcut ticket ULR
  * @returns {string} the updated release description
  * */
 const addStoryDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink, storyTitle, storyLink) {
-  const storyCommentForDeployment = `${ESCAPE_NEW_LINE}<li> <${prLink}|\`${prTitle}\`> - <${storyLink}|\`${storyTitle}\`> </li>`;
+  const storyCommentForDeployment = `${ESCAPE_NEW_LINE}<li><${prLink}|${prTitle}> - <${storyLink}|${storyTitle}></li>`;
   return deploymentDescription.concat(storyCommentForDeployment)
 }
 
@@ -15621,7 +15620,7 @@ const addStoryDescriptionToDeploymentDescription = function (deploymentDescripti
  * @returns {string} the updated release description
  */
 const addPrDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink) {
-  return deploymentDescription.concat(`${ESCAPE_NEW_LINE}<li> <${prLink}|\`${prTitle}\`> </li>`)
+  return deploymentDescription.concat(`${ESCAPE_NEW_LINE}<li><${prLink}|${prTitle}></li>`)
 }
 
 module.exports = {
@@ -15886,6 +15885,8 @@ async function notifyShortcut() {
   // 0e76920bea4381cfc676825f3143fdd5fcf8c21f refs/tags/1.0.0
   exec('git show-ref --tags', (err, showRefOutput, stderr) => {
 
+    const br = shortcut_description.ESCAPE_NEW_LINE;
+
     if (err) {
       console.log('\x1b[33m%s\x1b[0m', 'Could not find any tags because: ');
       console.log('\x1b[31m%s\x1b[0m', showRefOutput);
@@ -15933,8 +15934,8 @@ async function notifyShortcut() {
       }
 
       // notification message
-      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to \`dev\` and \`staging\`. All associated tickets have been labelled \`${nextVersionTag}\` as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
-      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to \`dev\` and \`staging\`.`
+      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${br}This has been deployed to \`dev\` and \`staging\`. All associated tickets have been labelled \`${nextVersionTag}\` as well.${br}The tickets to be released are:`
+      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${br}This has been deployed to \`dev\` and \`staging\`.`
       let deploymentDescription = '';
 
       // find all merged pull requests from the latest version
@@ -16004,7 +16005,7 @@ async function notifyShortcut() {
 
       // form the final description
       if (deploymentDescription !== '') {
-        deploymentDescription = deploymentTitle.concat('<ul>', deploymentDescription, '</ul>');
+        deploymentDescription = deploymentTitle.concat(`${br}<ul>${br}`, deploymentDescription, `${br}</ul>`);
       } else {
         deploymentDescription = deploymentTitleEmpty;
       }
