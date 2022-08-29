@@ -59,7 +59,7 @@ jobs:
         if: github.event.inputs.version != 'latest'
         run: | 
           regex="^([0-9]+).([0-9]+).([0-9]+)$"
-          [[ ${{ github.event.inputs.version }} =~ $regex ]] && exit 1
+          [[ ${{ github.event.inputs.version }} =~ $regex ]] || exit 1
           echo ::set-output name=current-version::${{ github.event.inputs.version }}
 
       - name: "Step 3/3: Read Specific Version Commit"
