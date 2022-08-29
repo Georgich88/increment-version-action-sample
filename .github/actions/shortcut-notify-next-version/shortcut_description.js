@@ -10,8 +10,8 @@ const ESCAPE_NEW_LINE = '%0A'; // to escape '\n'
  * @param story.app_url {string} the shortcut ticket ULR
  * @returns {string} the updated release description
  * */
-const addStoryDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink, story) {
-  const storyCommentForDeployment = `${ESCAPE_NEW_LINE}<li> <${prLink}|\`${prTitle}\`> - <${story.app_url}|\`${story.name}\`> </li>`;
+const addStoryDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink, storyTitle, storyLink) {
+  const storyCommentForDeployment = `${ESCAPE_NEW_LINE}<li> <${prLink}|\`${prTitle}\`> - <${story.app_url}|\`${story.number}\`> </li>`;
   return deploymentDescription.concat(storyCommentForDeployment)
 }
 

@@ -109,7 +109,7 @@ async function notifyShortcut() {
             storyFound = true;
             deploymentDescription = shortcut_description.addStoryDescriptionToDeploymentDescription(
               deploymentDescription,
-              prTitle,
+              prNumber,
               prLink,
               story);
           }
