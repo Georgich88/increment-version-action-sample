@@ -80,7 +80,7 @@ jobs:
           status: ${{ job.status }}
           config: .github/config/slack-notify-next-version/slack.yml
           channel: '#engineering-deploys'
-          text: ${{ steps.prepare_release_description.outputs.deployment-description }}
+          message: ${{ steps.prepare_release_description.outputs.deployment-description }}
         if: always()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ENGINEERING_DEPLOYS_WEBHOOK_URL }}
