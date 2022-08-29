@@ -79,27 +79,21 @@ jobs:
 
       # Deployment
 
-      - name: "Step 0: Say"
+      - name: "Step 1/2: Invoke Deploy PROD"
         id: deploy_to_prod
-        run: | 
-          echo ${{ needs.read_commit.outputs.version-commit }}
-          echo AktivChem-Server is releasing v${{ needs.read_commit.outputs.version }} onto prod
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Deploy
+          token: ${{ secrets.BOT_TOKEN_REPO_ALL }}
+          inputs: '{ "branch": "main", "test": "false", "target": "dev-api", "commit": ${{ needs.read_commit.outputs.version-commit }} }'
 
-#      - name: "Step 1/2: Invoke Deploy PROD"
-#        id: deploy_to_prod
-#        uses: benc-uk/workflow-dispatch@v1
-#        with:
-#          workflow: Deploy
-#          token: ${{ secrets.BOT_TOKEN_REPO_ALL }}
-#          inputs: '{ "branch": "main", "test": "false", "target": "dev-api", "commit": ${{ needs.read_commit.outputs.version-commit }} }'
-#
-#        # Notification
-#
-#      - name: "Step 2/2: Notify Slack ${{ needs.read_commit.outputs.version-commit }}"
-#        id: send_release_description
-#        uses: act10ns/slack@v1
-#        with:
-#          status: ${{ job.status }}
-#          message: "@channel AktivChem-Server is releasing v${{ needs.read_commit.outputs.version }} onto `prod`"
-#        env:
-#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ENGINEERING_DEPLOYS_WEBHOOK_URL }}
+        # Notification
+
+      - name: "Step 2/2: Notify Slack ${{ needs.read_commit.outputs.version-commit }}"
+        id: send_release_description
+        uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          message: "@channel AktivChem-Server is releasing v${{ needs.read_commit.outputs.version }} onto `prod`"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ENGINEERING_RELEASES_WEBHOOK_URL }}
