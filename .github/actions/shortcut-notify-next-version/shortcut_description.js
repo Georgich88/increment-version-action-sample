@@ -10,7 +10,7 @@ const ESCAPE_NEW_LINE = '%0A'; // to escape '\n'
  * @returns {string} the updated release description
  * */
 const addStoryDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink, storyTitle, storyLink) {
-  const storyCommentForDeployment = `${ESCAPE_NEW_LINE} &#8226 <${prLink}|${prTitle}> - <${storyLink}|${storyTitle}>`;
+  const storyCommentForDeployment = `${ESCAPE_NEW_LINE}  • <${prLink}|${prTitle}> - <${storyLink}|${storyTitle}>`;
   return deploymentDescription.concat(storyCommentForDeployment)
 }
 
@@ -22,7 +22,7 @@ const addStoryDescriptionToDeploymentDescription = function (deploymentDescripti
  * @returns {string} the updated release description
  */
 const addPrDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink) {
-  return deploymentDescription.concat(`${ESCAPE_NEW_LINE} &#8226 <${prLink}|${prTitle}>`)
+  return deploymentDescription.concat(`${ESCAPE_NEW_LINE}  • <${prLink}|${prTitle}>`)
 }
 
 module.exports = {
