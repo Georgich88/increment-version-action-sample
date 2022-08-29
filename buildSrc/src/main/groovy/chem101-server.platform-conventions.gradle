@@ -1,6 +1,6 @@
 group 'co.chem101'
 
-ext.versionNumber = '19.4.1'
+ext.versionNumber = '19.4.2'
 ext.app = 'tf-chem101'
 ext.profile = System.getenv('PROFILE') // dev-api, staging-api, prod-api
 ext.ref = System.getenv('GITHUB_REF') // refs/heads/<branch_name>
