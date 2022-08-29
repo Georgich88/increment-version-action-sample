@@ -15608,8 +15608,8 @@ const ESCAPE_NEW_LINE = '%0A'; // to escape '\n'
  * @param story.app_url {string} the shortcut ticket ULR
  * @returns {string} the updated release description
  * */
-const addStoryDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink, story) {
-  const storyCommentForDeployment = `${ESCAPE_NEW_LINE}<li> <${prLink}|\`${prTitle}\`> - <${story.app_url}|\`${story.name}\`> </li>`;
+const addStoryDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink, storyTitle, storyLink) {
+  const storyCommentForDeployment = `${ESCAPE_NEW_LINE}<li> <${prLink}|\`${prTitle}\`> - <${storyLink}|\`${storyTitle}\`> </li>`;
   return deploymentDescription.concat(storyCommentForDeployment)
 }
 
@@ -15933,8 +15933,8 @@ async function notifyShortcut() {
       }
 
       // notification message
-      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for ${nextVersionTag}.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging. All associated tickets have been labelled ${nextVersionTag} as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
-      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for ${nextVersionTag}.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging.`
+      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to \`dev\` and \`staging\`. All associated tickets have been labelled \`${nextVersionTag}\` as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
+      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to \`dev\` and \`staging\`.`
       let deploymentDescription = '';
 
       // find all merged pull requests from the latest version
@@ -15966,7 +15966,7 @@ async function notifyShortcut() {
         // pull request details
         const prNumber = prDetails.number != null ? prDetails.number : '';
         const prDescription = prDetails.body != null ? prDetails.body : '';
-        const prTitle = prDetails.title != null ? prDetails.title : '';
+        const prTitle = prDetails.title != null ? 'PR-' + prNumber : '';
         const prLink = prDetails.html_url != null ? prDetails.html_url : '';
 
         // retrieve stories from the pull request
@@ -15981,11 +15981,14 @@ async function notifyShortcut() {
           const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
           if (story) {
             storyFound = true;
+            const storyTitle = 'SC-' + storyId;
+            const storyLink = story.app_url != null ? story.app_url : '';
             deploymentDescription = shortcut_description.addStoryDescriptionToDeploymentDescription(
               deploymentDescription,
               prTitle,
               prLink,
-              story);
+              storyTitle,
+              storyLink);
           }
         }
 
@@ -16001,7 +16004,7 @@ async function notifyShortcut() {
 
       // form the final description
       if (deploymentDescription !== '') {
-        deploymentDescription = deploymentDescription.concat(deploymentTitle, '<ul>', deploymentDescription, '</ul>');
+        deploymentDescription = deploymentTitle.concat('<ul>', deploymentDescription, '</ul>');
       } else {
         deploymentDescription = deploymentTitleEmpty;
       }
