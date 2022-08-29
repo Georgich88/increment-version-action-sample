@@ -59,7 +59,9 @@ async function notifyShortcut() {
       }
 
       // notification message
-      let deploymentDescription = `Aktiv-Server is preparing a release for ${nextVersionTag}.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging. All associated tickets have been labelled ${nextVersionTag} as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
+      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for ${nextVersionTag}.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging. All associated tickets have been labelled ${nextVersionTag} as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
+      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for ${nextVersionTag}.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging.`
+      let deploymentDescription = '';
 
       // find all merged pull requests from the latest version
       const commitHashes = revListOutput.split(/\r?\n/);
@@ -105,15 +107,29 @@ async function notifyShortcut() {
           const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
           if (story) {
             storyFound = true;
-            deploymentDescription = shortcut_description.addStoryDescriptionToDeploymentDescription(deploymentDescription, prTitle, prLink, story);
+            deploymentDescription = shortcut_description.addStoryDescriptionToDeploymentDescription(
+              deploymentDescription,
+              prTitle,
+              prLink,
+              story);
           }
         }
 
         // if there is no story, just add pr info to final description
         if (!storyFound) {
-          deploymentDescription = shortcut_description.addPrDescriptionToDeploymentDescription(deploymentDescription, prTitle, prLink);
+          deploymentDescription = shortcut_description.addPrDescriptionToDeploymentDescription(
+            deploymentDescription,
+            prTitle,
+            prLink);
         }
 
+      }
+
+      // form the final description
+      if (deploymentDescription !== '') {
+        deploymentDescription = deploymentDescription.concat(deploymentTitle, '<ul>', deploymentDescription, '</ul>');
+      } else {
+        deploymentDescription = deploymentTitleEmpty;
       }
 
       // set deployment description for a further steps
