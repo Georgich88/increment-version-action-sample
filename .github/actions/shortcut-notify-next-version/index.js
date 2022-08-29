@@ -59,8 +59,8 @@ async function notifyShortcut() {
       }
 
       // notification message
-      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging. All associated tickets have been labelled \`${nextVersionTag}\` as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
-      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging.`
+      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to \`dev\` and \`staging\`. All associated tickets have been labelled \`${nextVersionTag}\` as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
+      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to \`dev\` and \`staging\`.`
       let deploymentDescription = '';
 
       // find all merged pull requests from the latest version
@@ -130,7 +130,7 @@ async function notifyShortcut() {
 
       // form the final description
       if (deploymentDescription !== '') {
-        deploymentDescription = deploymentTitle.concat(deploymentTitle, '<ul>', deploymentDescription, '</ul>');
+        deploymentDescription = deploymentTitle.concat('<ul>', deploymentDescription, '</ul>');
       } else {
         deploymentDescription = deploymentTitleEmpty;
       }
