@@ -1,0 +1,17 @@
+name: Read Version Commit
+description: Find a commit for a specific version
+branding:
+  icon: 'tag'
+  color: 'purple'
+inputs:
+  version:
+    description: 'The version to find a commit'
+    required: true
+outputs:
+  version-commit:
+    description: 'The found version commit'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.version }}

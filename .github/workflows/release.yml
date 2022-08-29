@@ -1,0 +1,95 @@
+name: Release
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      current-version-file:
+        description: 'The current version file to look up the latest version'
+        default: 'buildSrc/src/main/groovy/chem101-server.platform-conventions.gradle'
+        required: true
+      version:
+        description: 'The version to release on production environment'
+        default: 'latest'
+        required: true
+
+jobs:
+
+  read_commit:
+    name: Read version commit
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # fetch all history for all tags and branches
+
+      # New release version
+
+      - name: "Step 1/3: Read Branch Name"
+        id: read_current_branch_name
+        run: echo ::set-output name=branch-name::${GITHUB_REF#refs/*/}
+
+      # Steps for 'latest' version
+
+      - name: "Step 2/3: Read Latest Version"
+        id: read_latest_version
+        if: github.event.inputs.version == 'latest'
+        uses: ./.github/actions/read-current-version/
+        with:
+          current-version-file: ${{github.event.inputs.current-version-file}}
+
+      - name: "Step 3/3: Read Latest Version Commit ${{ steps.read_current_version.outputs.current-version }}"
+        id: read_version_commit_latest
+        if: github.event.inputs.version == 'latest'
+        uses: ./.github/actions/read-version-commit
+        with:
+          version: ${{ steps.read_latest_version.outputs.current-version }}
+
+      # Steps for the specific version
+
+      - name: "Step 2/3: Verify Version"
+        id: verify_version
+        if: github.event.inputs.version != 'latest'
+        run: echo ::set-output name=current-version::${{ github.event.inputs.version }}
+
+      - name: "Step 3/3: Read Specific Version Commit"
+        id: read_version_commit_specific
+        if: github.event.inputs.version != 'latest'
+        uses: ./.github/actions/read-version-commit
+        with:
+          version: ${{ steps.read_latest_version.outputs.current-version }}
+
+  deploy:
+
+    name: Deploy Prod
+    runs-on: ubuntu-latest
+    needs: read_commit
+
+    steps:
+
+      # Deployment
+
+      - name: "Step 0: Say"
+        id: deploy_to_prod
+        run: echo ${{ needs.read_commit.outputs.version-commit }}
+
+#      - name: "Step 1/2: Invoke Deploy PROD"
+#        id: deploy_to_prod
+#        uses: benc-uk/workflow-dispatch@v1
+#        with:
+#          workflow: Deploy
+#          token: ${{ secrets.BOT_TOKEN_REPO_ALL }}
+#          inputs: '{ "branch": "main", "test": "false", "target": "dev-api", "commit": ${{ needs.read_commit.outputs.version-commit }} }'
+#
+#        # Notification
+#
+#      - name: "Step 2/2: Notify Slack ${{ needs.read_commit.outputs.version-commit }}"
+#        id: send_release_description
+#        uses: act10ns/slack@v1
+#        with:
+#          status: ${{ job.status }}
+#          message: "@channel AktivChem-Server is releasing v${{ needs.read_commit.outputs.version }} onto `prod`"
+#        env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_ENGINEERING_DEPLOYS_WEBHOOK_URL }}
