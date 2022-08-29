@@ -59,8 +59,8 @@ async function notifyShortcut() {
       }
 
       // notification message
-      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for ${nextVersionTag}.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging. All associated tickets have been labelled ${nextVersionTag} as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
-      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for ${nextVersionTag}.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging.`
+      let deploymentTitle = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging. All associated tickets have been labelled \`${nextVersionTag}\` as well.${shortcut_description.ESCAPE_NEW_LINE}The tickets to be released are:`
+      let deploymentTitleEmpty = `TEST. Aktiv-Server is preparing a release for \`${nextVersionTag}\`.${shortcut_description.ESCAPE_NEW_LINE}This has been deployed to dev and staging.`
       let deploymentDescription = '';
 
       // find all merged pull requests from the latest version
@@ -92,7 +92,7 @@ async function notifyShortcut() {
         // pull request details
         const prNumber = prDetails.number != null ? prDetails.number : '';
         const prDescription = prDetails.body != null ? prDetails.body : '';
-        const prTitle = prDetails.title != null ? prDetails.title : '';
+        const prTitle = prDetails.title != null ? 'PR-' + prNumber : '';
         const prLink = prDetails.html_url != null ? prDetails.html_url : '';
 
         // retrieve stories from the pull request
@@ -107,11 +107,14 @@ async function notifyShortcut() {
           const story = await updateStoryWithVersionTagLabel(storyId, nextVersionTag, SHORTCUT_TOKEN);
           if (story) {
             storyFound = true;
+            const storyTitle = 'SC-' + storyId;
+            const storyLink = story.app_url != null ? story.app_url : '';
             deploymentDescription = shortcut_description.addStoryDescriptionToDeploymentDescription(
               deploymentDescription,
-              prNumber,
+              prTitle,
               prLink,
-              story);
+              storyTitle,
+              storyLink);
           }
         }
 
