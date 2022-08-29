@@ -20,9 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       # only one of the steps is executed, so the result would be latest or specific commit
-      version-commit: ${{ steps.read_version_commit_latest.outputs.version-commit }}${{ steps.read_version_commit_specific.outputs.version-commit }}
-      # only one of the steps is executed, so the result would be latest or specific commit
-      version: ${{ steps.read_latest_version.outputs.current-version }}${{ steps.verify_specific_version.outputs.current-version }}
+      version-commit: ${{ steps.read_version_commit_latest.outputs.version-commit || steps.read_version_commit_specific.outputs.version-commit }}
+      # only one of the steps is executed, so the result would be latest or specific version
+      version: ${{ steps.read_latest_version.outputs.current-version || steps.verify_specific_version.outputs.current-version }}
 
     steps:
 
@@ -57,9 +57,10 @@ jobs:
       - name: "Step 2/3: Verify Version"
         id: verify_specific_version
         if: github.event.inputs.version != 'latest'
-        run: regex="^([0-9]+).([0-9]+).([0-9]+)$"
-          | [[ ${{ github.event.inputs.version }} =~ $regex ]] && exit 1
-          | echo ::set-output name=current-version::${{ github.event.inputs.version }}
+        run: | 
+          regex="^([0-9]+).([0-9]+).([0-9]+)$"
+          [[ ${{ github.event.inputs.version }} =~ $regex ]] && exit 1
+          echo ::set-output name=current-version::${{ github.event.inputs.version }}
 
       - name: "Step 3/3: Read Specific Version Commit"
         id: read_version_commit_specific
@@ -80,8 +81,9 @@ jobs:
 
       - name: "Step 0: Say"
         id: deploy_to_prod
-        run: echo ${{ needs.read_commit.outputs.version-commit }}
-          | echo AktivChem-Server is releasing v${{ needs.read_commit.outputs.version }} onto prod
+        run: | 
+          echo ${{ needs.read_commit.outputs.version-commit }}
+          echo AktivChem-Server is releasing v${{ needs.read_commit.outputs.version }} onto prod
 
 #      - name: "Step 1/2: Invoke Deploy PROD"
 #        id: deploy_to_prod
