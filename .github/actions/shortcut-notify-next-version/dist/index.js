@@ -15608,7 +15608,7 @@ const ESCAPE_NEW_LINE = '%0A'; // to escape '\n'
  * @returns {string} the updated release description
  * */
 const addStoryDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink, storyTitle, storyLink) {
-  const storyCommentForDeployment = `${ESCAPE_NEW_LINE}<li><${prLink}|${prTitle}> - <${storyLink}|${storyTitle}></li>`;
+  const storyCommentForDeployment = `${ESCAPE_NEW_LINE} &#8226 <${prLink}|${prTitle}> - <${storyLink}|${storyTitle}>`;
   return deploymentDescription.concat(storyCommentForDeployment)
 }
 
@@ -15620,7 +15620,7 @@ const addStoryDescriptionToDeploymentDescription = function (deploymentDescripti
  * @returns {string} the updated release description
  */
 const addPrDescriptionToDeploymentDescription = function (deploymentDescription, prTitle, prLink) {
-  return deploymentDescription.concat(`${ESCAPE_NEW_LINE}<li><${prLink}|${prTitle}></li>`)
+  return deploymentDescription.concat(`${ESCAPE_NEW_LINE} &#8226 <${prLink}|${prTitle}>`)
 }
 
 module.exports = {
@@ -16005,7 +16005,7 @@ async function notifyShortcut() {
 
       // form the final description
       if (deploymentDescription !== '') {
-        deploymentDescription = deploymentTitle.concat(`${br}<ul>${br}`, deploymentDescription, `${br}</ul>`);
+        deploymentDescription = deploymentTitle.concat(deploymentDescription);
       } else {
         deploymentDescription = deploymentTitleEmpty;
       }

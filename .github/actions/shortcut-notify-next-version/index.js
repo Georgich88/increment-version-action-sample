@@ -132,7 +132,7 @@ async function notifyShortcut() {
 
       // form the final description
       if (deploymentDescription !== '') {
-        deploymentDescription = deploymentTitle.concat(`${br}<ul>${br}`, deploymentDescription, `${br}</ul>`);
+        deploymentDescription = deploymentTitle.concat(deploymentDescription);
       } else {
         deploymentDescription = deploymentTitleEmpty;
       }
