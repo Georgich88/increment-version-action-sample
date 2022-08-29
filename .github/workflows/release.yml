@@ -19,7 +19,8 @@ jobs:
     name: Read version commit
     runs-on: ubuntu-latest
     outputs:
-      version-commit: ${{ steps.read_version_commit_latest.outputs.version-commit }} ${{ steps.read_version_commit_specific.outputs.version-commit }}
+      # only one of the steps is executed, so the result would be latest or specific commit
+      version-commit: ${{ steps.read_version_commit_latest.outputs.version-commit }}${{ steps.read_version_commit_specific.outputs.version-commit }}
 
 
     steps:
